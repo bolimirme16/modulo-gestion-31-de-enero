@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block t %}Auditoría{% endblock %}{% block c %}
+<div class="card noprint"><h2>Auditoría — filtrar por fecha + cédula + tipo</h2>
+<form method="get">Desde: <input type="date" name="desde" value="{{desde}}"> Hasta: <input type="date" name="hasta" value="{{hasta}}">
+Cédula: <input name="cedula" value="{{cedula}}" placeholder="cédula"> Tipo: <input name="tipo" value="{{tipo}}" placeholder="PAGO/MULTA/CAFE/CERRAR..."><button>Filtrar</button>
+<button onclick="window.print()" type="button">Imprimir</button></form></div>
+<div class="card"><div class="print-head">
+{% if logo_exists %}<img src="/static/logo.png" style="height:70px">{% endif %}
+<div style="flex:1;text-align:center"><h2 style="margin:0">ASOCIACIÓN 31 DE ENERO NARCIZA DE JESÚS</h2>
+<div>Reporte de auditoría — emitido {{ahora}}</div></div></div>
+<table><tr><th>Fecha-hora</th><th>Acción [usuario]</th><th>Tabla</th><th>Cédula</th><th>Detalle</th></tr>
+{% for r in rows %}<tr><td>{{r.fecha_hora}}</td><td>{{r.accion}}</td><td>{{r.tabla}}</td><td>{{r.cedula}}</td><td>{{r.detalle}}</td></tr>{% endfor %}</table></div>{% endblock %}

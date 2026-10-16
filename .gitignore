@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+# Base de datos local (tiene datos reales de socios: NO subir)
+*.db
+*.db-journal
+*.sqlite3
+# Empaquetado PyInstaller (pesado y regenerable con el .spec)
+dist/
+build/
+# Entorno virtual
+venv/
+.venv/
+# Windows
+Thumbs.db
+Desktop.ini

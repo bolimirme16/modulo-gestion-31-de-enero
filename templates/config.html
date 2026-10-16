@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block t %}Config{% endblock %}{% block c %}
+<div class="card"><h2>⚙ Configuración</h2><p>Usuario: <b>{{user}}</b> | Versión: <b>{{version}}</b></p>
+<h3>Logo de la asociación (sale en el comprobante impreso)</h3>
+{% if logo_exists %}<p><img src="/static/logo.png" style="max-height:90px;border:1px solid #ccc;border-radius:10px"></p>{% else %}<p class="debe">Aún no hay logo cargado.</p>{% endif %}
+<form method="post" enctype="multipart/form-data"><input type="file" name="logo" accept=".png,.jpg,.jpeg"><button>Subir logo</button></form>
+<h3>Cambiar clave</h3>
+<form method="post"><input type="password" name="nueva_clave" placeholder="Nueva clave (mín 6)" minlength="6"><button>Cambiar</button></form></div>
+<div class="card"><h3>🛡 Integridad de los datos</h3>
+<p class="noprint"><a href="/integridad"><button>🔍 Verificar integridad ahora</button></a></p>
+{% if revision %}
+<table><tr><th>Estado</th><th>Chequeo</th></tr>
+{% for ok, msg in revision %}<tr><td>{% if ok %}<span class="badge ok">OK</span>{% else %}<span class="badge bad">REVISAR</span>{% endif %}</td><td>{{msg}}</td></tr>{% endfor %}</table>
+{% else %}<p>Comprueba límites, cédulas, orden de lista, registros huérfanos y valores raros.</p>{% endif %}</div>
+<div class="card"><h3>💾 Respaldo manual</h3>
+<p>Descarga una copia de la base de datos con la fecha de hoy. Guárdela en un USB.</p>
+<p class="noprint"><a href="/respaldo"><button class="btnG">⬇ Descargar respaldo (.db)</button></a></p></div>{% endblock %}

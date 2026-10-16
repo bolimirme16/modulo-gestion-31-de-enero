@@ -1,0 +1,47 @@
+{% extends "base.html" %}{% block t %}Reunión{% endblock %}{% block c %}
+<div class="print-only"><div class="print-head">
+{% if logo_exists %}<img src="/static/logo.png" style="height:70px">{% endif %}
+<div style="flex:1;text-align:center"><h2 style="margin:0">ASOCIACIÓN 31 DE ENERO NARCIZA DE JESÚS</h2>
+<div>{{titulo}} — {{fecha}} — {{tipo_reu}}</div></div></div></div>
+<div class="card noprint"><h2>🗓 {{titulo}} {{bloqueo}}</h2>
+{% if not cerrada %}
+<form method="post" action="/reunion?fecha={{fecha}}&acc=titulo" style="margin-bottom:6px">Título del evento:
+<input name="titulo" value="{{titulo}}" maxlength="120" style="width:45%" placeholder="Ej. Bingo solidario extraordinario"><button>Guardar título</button></form>
+{% endif %}
+<form method="get">Reunión ordinaria:
+<select name="fecha">{% for f in ordinarias %}<option value="{{f}}" {{'selected' if f==fecha}}>{{f}}</option>{% endfor %}</select>
+<button>Ver</button></form>
+<form method="get" style="margin-top:6px">Evento extraordinario (de vez en cuando, cualquier fecha, solo pasa lista):
+<input type="date" name="fecha" value="{{'' if ordinaria else fecha}}"> <button>Ver extra</button></form>
+<p>Fecha: <b>{{fecha}}</b> | Tipo: <b>{{tipo_reu}}</b> | Periodo: <b>{{periodo}}</b>{% if ordinaria %} | Turno café: <b>C{{turno}} ($1.50, resto $3.00)</b>{% endif %} |
+Estado: {% if cerrada %}<span class="badge ok">CERRADA ✅</span> <a href="/reunion?fecha={{fecha}}&acc=reabrir" onclick="return confirm('Reabrir para corregir?')"><button class="btn2">Reabrir</button></a>{% else %}<span class="badge warn">ABIERTA ⏳</span>{% endif %}</p>
+{% if not cerrada %}
+<p><a href="/reunion?fecha={{fecha}}&acc=gen_asistencia"><button>Paso 1: Generar asistencia (lista)</button></a>
+{% if ordinaria %}
+<a href="/reunion?fecha={{fecha}}&acc=gen_cafe"><button>Paso 2: Generar café</button></a>
+<a href="/reunion?fecha={{fecha}}&acc=gen_mens"><button>Paso 3: Generar mensualidades $25</button></a>
+{% else %}<span class="badge warn">Extraordinaria: pasos 2 y 3 deshabilitados (aquí NO se cobra mensualidad ni café)</span>{% endif %}</p>
+<form method="post" action="/reunion?fecha={{fecha}}&acc=cerrar" onsubmit="return confirm('¿TERMINAR la sesión {{fecha}}? Se guardará y bloqueará la edición.')">
+<input name="observacion" placeholder="Observación de cierre (opcional)" style="width:40%">
+<button class="btnG" style="font-size:16px">🔒 TERMINAR SESIÓN Y GUARDAR</button></form>
+{% if reu and reu.cerrada_en %}<p>Cerrada en: {{reu.cerrada_en}} | Total cobrado: ${{reu.total_ing}} | {{reu.observacion}}</p>{% endif %}
+{% else %}<p>Sesión cerrada el {{reu.cerrada_en}} — Total: ${{reu.total_ing}}. Solo lectura.</p>{% endif %}</div>
+<p class="noprint" style="margin-top:6px"><button onclick="window.print()">🖨 Imprimir lista</button></p>
+<div class="card"><h3>Paso 1: Asistencia (Falta=$5)</h3>
+<table><tr><th>Ord</th><th>Socio</th><th>Estado</th><th>Multa</th>{% if not cerrada %}<th class="noprint">Marcar/Cobrar</th>{% endif %}</tr>
+{% for a in asist %}<tr><td>{{a.orden_lista}}</td><td>{{a.apellidos}} {{a.nombres}}</td><td>{{a.estado}}</td>
+<td class="{{'debe' if a.multa_estado=='DEBE' else 'pag'}}">${{a.multa}} {{a.multa_estado}}</td>
+{% if not cerrada %}<td class="noprint"><form method="post" action="/reunion?fecha={{fecha}}&acc=set_asistencia" style="display:inline">
+<input type="hidden" name="cedula" value="{{a.cedula}}"><select name="estado"><option {{'selected' if a.estado=='PRESENTE'}}>PRESENTE</option><option {{'selected' if a.estado=='PERMISO'}}>PERMISO</option><option {{'selected' if a.estado=='FALTA'}}>FALTA</option></select><button>OK</button></form>
+{% if a.multa_estado=='DEBE' %}<form method="post" action="/reunion?fecha={{fecha}}&acc=pagar_multa" style="display:inline"><input type="hidden" name="cedula" value="{{a.cedula}}"><button>Cobrar $5</button></form>{% endif %}</td>{% endif %}</tr>{% endfor %}</table></div>
+{% if ordinaria %}
+<div class="card"><h3>Paso 2: Café y rifas (turno C{{turno}})</h3>
+<table><tr><th>Ord</th><th>Socio</th><th>Com</th><th>Monto</th><th>Estado</th>{% if not cerrada %}<th class="noprint">Cobrar</th>{% endif %}</tr>
+{% for c in cafes %}<tr><td>{{c.orden_lista}}</td><td>{{c.apellidos}} {{c.nombres}}</td><td>C{{c.comision}} {{'(turno)' if c.es_turno else ''}}</td><td>${{c.monto}}</td>
+<td class="{{'debe' if c.estado=='DEBE' else 'pag'}}">{{c.estado}}</td>
+{% if not cerrada %}<td class="noprint">{% if c.estado=='DEBE' %}<form method="post" action="/reunion?fecha={{fecha}}&acc=pagar_cafe"><input type="hidden" name="cedula" value="{{c.cedula}}"><button>Cobrar</button></form>{% endif %}</td>{% endif %}</tr>{% endfor %}</table></div>
+<div class="card"><h3>Paso 3: Mensualidades $25</h3>
+<table><tr><th>Ord</th><th>Socio</th><th>Cuota</th><th>Pagado</th><th>Saldo</th><th>Estado</th>{% if not cerrada %}<th class="noprint">Abono</th>{% endif %}</tr>
+{% for m in mens %}<tr><td>{{m.orden_lista}}</td><td>{{m.apellidos}} {{m.nombres}}</td><td>${{m.cuota}}</td><td>${{m.pagado}}</td><td>${{'%.2f'|format(m.cuota-m.pagado)}}</td>
+<td class="{{'debe' if m.estado!='PAGADO' else 'pag'}}">{{m.estado}}</td>
+{% if not cerrada %}<td class="noprint"><form method="post" action="/reunion?fecha={{fecha}}&acc=pagar_mens"><input type="hidden" name="cedula" value="{{m.cedula}}"><input name="abono" inputmode="decimal" placeholder="$ ej. 25.50" style="width:90px" title="Solo números con hasta 2 decimales"><button>Cobrar</button></form></td>{% endif %}</tr>{% endfor %}</table></div>{% endif %}{% endblock %}

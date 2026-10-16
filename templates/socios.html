@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% block t %}Socios{% endblock %}{% block c %}
+<div class="card noprint"><h2>👥 Socios ({{total}}/69)</h2>
+<form method="get"><input name="q" value="{{q}}" placeholder="buscar cédula/nombre" maxlength="10"><button>Buscar</button></form>
+<form method="post" id="fSocio" style="margin-top:10px">
+<h3>Registrar / actualizar (primera carga desde hoja física)</h3>
+<input name="cedula" id="ced" placeholder="Cédula 10 dígitos *" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" title="10 dígitos">
+<span id="msgCed" style="font-size:12px"></span><br>
+<input name="nombres" placeholder="Nombres *" required><input name="apellidos" placeholder="Apellidos *" required><br>
+<label>Fecha nacimiento: <input name="fecha_nac" type="date" max="{{hoy}}" id="fnac"></label>
+<span id="edad" style="font-size:13px"></span><br>
+<input name="nacionalidad" placeholder="Nacionalidad" value="Ecuatoriana">
+<select name="estado_civil" required><option value="">-- Estado civil --</option>
+{% for e in civiles %}<option>{{e}}</option>{% endfor %}</select><br>
+<input name="domicilio" placeholder="Domicilio actual (dirección)" style="width:60%">
+<input name="telefono" placeholder="Teléfono" pattern="[0-9+ ]{7,15}"><br>
+<input name="saldo_inicial" id="saldo" placeholder="Deuda inicial $ ej. 25.50" inputmode="decimal">
+<span id="msgMonto" style="font-size:12px"></span><br>
+<select name="estado"><option>ACTIVO</option><option>INACTIVO</option></select>
+<button>Guardar</button></form>
+<script>
+const ced=document.getElementById('ced'),msg=document.getElementById('msgCed');
+ced.addEventListener('input',()=>{ced.value=ced.value.replace(/\D/g,'').slice(0,10);
+msg.textContent=ced.value.length===0?'':(ced.value.length===10?'✅ 10 dígitos':'⏳ '+ced.value.length+'/10 dígitos');
+msg.style.color=ced.value.length===10?'green':'#856404';});
+const fn=document.getElementById('fnac'),ed=document.getElementById('edad');
+fn.addEventListener('change',()=>{if(!fn.value){ed.textContent='';return;}
+const n=new Date(fn.value),h=new Date();let e=h.getFullYear()-n.getFullYear();
+if(h.getMonth()<n.getMonth()||(h.getMonth()===n.getMonth()&&h.getDate()<n.getDate()))e--;
+ed.textContent='Edad: '+e+' años';});
+const sal=document.getElementById('saldo'),mm=document.getElementById('msgMonto');
+sal.addEventListener('input',()=>{let v=sal.value.replace('$','').trim().replace(',','.');
+if(v===''||/^\d+(\.\d{1,2})?$/.test(v)){mm.textContent='';sal.style.border='';}
+else{mm.textContent='⚠ Formato: solo números con hasta 2 decimales (ej. 25.50). Nada de doble punto.';mm.style.color='#856404';sal.style.border='2px solid #e6c200';}});
+document.getElementById('fSocio').addEventListener('submit',(e)=>{let v=sal.value.replace('$','').trim().replace(',','.');
+if(v!==''&&!/^\d+(\.\d{1,2})?$/.test(v)){e.preventDefault();alert('Monto inválido: revise la deuda inicial (ej. 25.50, sin doble punto).');}});
+</script></div>
+<div class="card"><table><tr><th>Ord</th><th>Cédula</th><th>Nombres</th><th>Edad</th><th>Estado civil</th><th>Teléfono</th><th>Com</th><th>Est</th><th class="noprint">Acción</th></tr>
+{% for s in socios %}<tr><td>{{s.orden_lista}}</td><td>{{s.cedula}}</td><td>{{s.apellidos}} {{s.nombres}}</td><td>{{s.edad}}</td><td>{{s.estado_civil}}</td><td>{{s.telefono}}</td><td>C{{s.comision}}</td><td>{{s.estado}}</td>
+<td class="noprint"><a href="/consulta?cedula={{s.cedula}}">Deuda</a> | <a href="/socios/eliminar/{{s.cedula}}" onclick="return confirm('Dar de baja?')">Baja</a></td></tr>{% endfor %}
+</table></div>{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block t %}Caja{% endblock %}{% block c %}
+<div class="card noprint"><h2>🧾 Caja chica — corte mensual</h2>
+<form method="get">Mes (YYYY-MM): <input name="mes" value="{{mes}}" placeholder="2026-10"><button>Filtrar</button> <a href="/caja"><button type="button" class="btn2">Ver todo</button></a></form>
+<form method="post" style="margin-top:8px">Registrar:
+<input type="date" name="fecha" value="{{hoy}}" required><select name="tipo"><option>GASTO</option><option>INGRESO</option></select>
+<input name="concepto" placeholder="Concepto" required><input name="monto" placeholder="$ ej. 25.50" required inputmode="decimal" title="Solo números con hasta 2 decimales, sin doble punto">
+<input name="doc" placeholder="Comprobante/Factura N° u obs." style="width:200px"><input name="periodo_ref" placeholder="Periodo YYYY-MM"><button>Guardar</button></form>
+<p>Ingresos: <b class="pag">${{ing}}</b> | Gastos: <b class="debe">${{gas}}</b> | Saldo: <b>${{saldo}}</b> <button onclick="window.print()">Imprimir corte</button></p></div>
+<div class="card"><div class="print-head">
+{% if logo_exists %}<img src="/static/logo.png" style="height:70px">{% endif %}
+<div style="flex:1;text-align:center"><h2 style="margin:0">ASOCIACIÓN 31 DE ENERO NARCIZA DE JESÚS</h2>
+<div>Corte de caja chica {% if mes %}— periodo {{mes}}{% endif %} — emitido {{ahora}}</div></div></div>
+<table><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Monto</th><th>Periodo</th><th>Comprobante / Obs</th></tr>
+{% for r in rows %}<tr><td>{{r.fecha}}</td><td>{{r.tipo}}</td><td>{{r.concepto}}{% if r.cedula_ref %} <a class="noprint" href="/consulta?cedula={{r.cedula_ref}}">(ver socio)</a>{% endif %}</td><td>${{r.monto}}</td><td>{{r.periodo_ref}}</td><td>{{r.doc}}</td></tr>{% endfor %}</table>
+<p>Ingresos: <b>${{ing}}</b> | Gastos: <b>${{gas}}</b> | Saldo: <b>${{saldo}}</b></p>
+<p>Firma secretaria: ___________________ &nbsp;&nbsp; Firma presidenta: ___________________</p></div>{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}{% block t %}Inicio{% endblock %}{% block c %}
+<style>
+.pie{width:150px;height:150px;border-radius:50%;margin:0 auto;position:relative;flex-shrink:0}
+.donut{width:150px;height:150px;border-radius:50%;margin:0 auto;position:relative;flex-shrink:0}
+.donut::after{content:"";position:absolute;inset:32px;background:#fff;border-radius:50%}
+.legend{font-size:13px;margin-top:8px}
+.legend div{margin:2px 0}
+.dot{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px}
+.piebox{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bar{height:14px;background:#c0392b;border-radius:4px;min-width:4px}
+</style>
+<div class="card">
+<h2>📊 Panel de control {% if logo_exists %}<img src="/static/logo.png" style="height:40px;vertical-align:middle">{% endif %}</h2>
+<p>Hola, <b>{{user}}</b> | Hoy {{hoy}} | Próxima reunión (último sábado): <b>{{usab}}</b> (periodo {{periodo}}) |
+Comisión en turno: <b>C{{turno}}</b> |
+Estado reunión: {% if estado_reu=='CERRADA' %}<span class="badge ok">CERRADA ✅</span>{% elif estado_reu=='ABIERTA' %}<span class="badge warn">ABIERTA ⏳</span>{% else %}<span class="badge bad">SIN INICIAR</span>{% endif %}</p>
+<div class="grid">
+<div class="card"><div>👥 Socios activos</div><div class="kpi">{{n}} / 69</div><a href="/socios">Gestionar</a></div>
+<div class="card"><div>💰 Total por cobrar</div><div class="kpi debe">${{debe}}</div><a href="/consulta">Consultar por cédula</a></div>
+<div class="card"><div>📥 Ingresos caja</div><div class="kpi pag">${{ingresos}}</div></div>
+<div class="card"><div>📤 Gastos caja</div><div class="kpi debe">${{gastos}}</div></div>
+<div class="card"><div>🧾 Saldo caja</div><div class="kpi">${{saldo}}</div><a href="/caja">Ver corte</a></div>
+</div></div>
+<div class="card">
+<div class="grid">
+<div class="card"><h4>👥 Socios: activos vs cupos (69)</h4><div class="piebox">
+<div class="donut" style="{{g_socios.style}}"></div>
+<div class="legend">{% if g_socios.vacio %}Sin socios{% else %}{% for i in g_socios.parts %}<div><span class="dot" style="background:{{i.col}}"></span>{{i.lab}}: {{i.val}} ({{i.pct}}%)</div>{% endfor %}{% endif %}</div></div></div>
+<div class="card"><h4>💰 Por cobrar: composición</h4><div class="piebox">
+<div class="pie" style="{{g_debe.style}}"></div>
+<div class="legend">{% if g_debe.vacio %}Sin deudas 🎉{% else %}{% for i in g_debe.parts %}<div><span class="dot" style="background:{{i.col}}"></span>{{i.lab}} ${{i.val}} ({{i.pct}}%)</div>{% endfor %}{% endif %}</div></div></div>
+<div class="card"><h4>📥 Ingresos: por origen</h4><div class="piebox">
+<div class="pie" style="{{g_ing.style}}"></div>
+<div class="legend">{% if g_ing.vacio %}Sin ingresos aún{% else %}{% for i in g_ing.parts %}<div><span class="dot" style="background:{{i.col}}"></span>{{i.lab}} ${{i.val}} ({{i.pct}}%)</div>{% endfor %}{% endif %}</div></div></div>
+<div class="card"><h4>📤 Gastos: por concepto</h4><div class="piebox">
+<div class="pie" style="{{g_gas.style}}"></div>
+<div class="legend">{% if g_gas.vacio %}Sin gastos{% else %}{% for i in g_gas.parts %}<div><span class="dot" style="background:{{i.col}}"></span>{{i.lab}} ${{i.val}} ({{i.pct}}%)</div>{% endfor %}{% endif %}</div></div></div>
+<div class="card"><h4>🧾 Saldo: ingresos vs gastos</h4><div class="piebox">
+<div class="donut" style="{{g_saldo.style}}"></div>
+<div class="legend">{% if g_saldo.vacio %}Sin movimientos{% else %}{% for i in g_saldo.parts %}<div><span class="dot" style="background:{{i.col}}"></span>{{i.lab}} ${{i.val}} ({{i.pct}}%)</div>{% endfor %}{% endif %}</div></div></div>
+</div></div>
+<div class="card"><h3>🗓 Reunión {{usab}} — avance</h3>
+<p>Asistencia: {{na}} registrados, {{nf}} faltas | Café: {{cp}}/{{ct}} cobrados | Mensualidades {{periodo}}: ${{mp}} de {{mt}} socios</p>
+<p class="noprint"><a href="/reunion?fecha={{usab}}"><button>▶ Ir a la reunión del mes</button></a>
+<a href="/reunion"><button class="btn2">Ver otra fecha</button></a></p>
+<p>Próximas reuniones: {% for f in proximos %} <b>{{f}}</b>{% endfor %}</p></div>
+<div class="card"><h3>⚠ Top 5 deudores</h3>
+{% if top %}<table><tr><th>Cédula</th><th>Socio</th><th>Debe</th><th style="width:30%">Nivel</th><th></th></tr>
+{% for c,nom,d in top %}<tr><td>{{c}}</td><td>{{nom}}</td><td class="debe">${{d}}</td>
+<td><div class="bar" style="width:{{(d*100/max_top)|round(1)}}%"></div></td>
+<td><a href="/consulta?cedula={{c}}">Comprobante</a></td></tr>{% endfor %}</table>
+{% else %}<p class="pag">Sin deudas pendientes 🎉</p>{% endif %}</div>{% endblock %}

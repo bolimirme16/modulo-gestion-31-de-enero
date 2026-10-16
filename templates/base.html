@@ -1,0 +1,44 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asoc. 31 de Enero - {% block t %}{% endblock %}</title>
+<style>
+:root{--vino:#7a0c0c;--vino2:#a31212;--verde:#0a7a2f;--gris:#6c757d;--fondo:#eef1f5;--linea:#e2e6ea}
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;margin:0;background:var(--fondo);color:#2b2f33}
+h2,h3,h4{color:var(--vino);margin:.4em 0}
+nav{background:linear-gradient(90deg,var(--vino),var(--vino2));color:#fff;padding:0 18px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.25);min-height:56px}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;margin-right:14px;padding:8px 0}
+nav .brand img{height:36px;width:36px;border-radius:50%;background:#fff;padding:2px}
+nav a.nl{color:#fff;text-decoration:none;font-weight:600;padding:10px 12px;border-radius:8px;opacity:.92}
+nav a.nl:hover{background:rgba(255,255,255,.16);opacity:1}
+nav .u{margin-left:auto;font-size:13px;display:flex;align-items:center;gap:8px}
+nav .u a{color:#ffd9d9}
+.wrap{max-width:1180px;margin:20px auto;padding:0 16px 30px}
+.card{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(30,30,60,.07)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{font-size:26px;font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:14px;border-radius:10px;overflow:hidden}
+th{background:var(--vino);color:#fff;padding:9px 8px;text-align:left;font-weight:600}
+td{border-bottom:1px solid var(--linea);padding:8px}
+tr:nth-child(even) td{background:#fafbfc}
+tbody tr:hover td{background:#fdf0f0}
+.debe{color:#c0392b;font-weight:700}.pag{color:var(--verde);font-weight:700}
+input,select,button{padding:9px 10px;margin:3px;border-radius:9px;font-size:14px;font-family:inherit}
+input,select{border:1px solid #c9d1d8;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--vino2);box-shadow:0 0 0 3px rgba(163,18,18,.15)}
+button{background:linear-gradient(180deg,var(--vino2),var(--vino));color:#fff;border:0;border-radius:9px;cursor:pointer;font-weight:600;box-shadow:0 2px 5px rgba(122,12,12,.3);transition:transform .06s,filter .15s}
+button:hover{filter:brightness(1.12)}button:active{transform:scale(.97)}
+.btn2{background:linear-gradient(180deg,#4a4f54,#34383c)!important}.btnG{background:linear-gradient(180deg,#0d9a3e,#076c2a)!important}
+.flash{background:#fff7dd;border:1px solid #e6c200;border-left:6px solid #e6a800;padding:10px 12px;border-radius:10px;margin-bottom:12px}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.ok{background:#d4edda;color:#155724}.warn{background:#fff3cd;color:#856404}.bad{background:#f8d7da;color:#721c24}
+.print-only{display:none}
+.print-head{display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--vino);padding-bottom:8px;margin-bottom:10px}
+@media print{nav,.noprint{display:none!important}.print-only{display:block!important}.wrap{margin:0;max-width:100%}body{background:#fff}.card{box-shadow:none;border:1px solid #999}button{display:none!important}}
+</style></head><body>
+<nav><span class="brand"><img src="/static/logo.png" onerror="this.style.display='none'">31 DE ENERO NARCIZA DE JESÚS</span>
+{% if session.get('user') %}<a class="nl" href="/">🏠 Inicio</a><a class="nl" href="/socios">👥 Socios</a><a class="nl" href="/reunion">🗓 Reunión</a>
+<a class="nl" href="/consulta">🔍 Consulta</a><a class="nl" href="/caja">🧾 Caja</a><a class="nl" href="/auditoria">📋 Auditoría</a><a class="nl" href="/config">⚙ Config</a>
+<span class="u">👤 {{session.get('user')}} | <a href="/logout">Salir</a> | <a href="/salir" onclick="return confirm('¿Cerrar el programa?')" style="background:#3d0606;padding:8px 12px;border-radius:8px;color:#fff!important">⏻ Cerrar programa</a></span>{% endif %}</nav>
+<div class="wrap">
+{% with m=get_flashed_messages() %}{% if m %}{% for x in m %}<div class="flash">{{x}}</div>{% endfor %}{% endif %}{% endwith %}
+{% block c %}{% endblock %}</div></body></html>
