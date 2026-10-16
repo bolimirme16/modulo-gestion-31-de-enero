@@ -26,8 +26,8 @@ concurrencia que justifique microservicios).
 ```mermaid
 flowchart LR
     SEC([Secretaria]) --> SIS[[Módulo Gestión 31 de Enero]]
-    SIS --> IMP[(Impresora\ncomprobantes y cortes)]
-    SIS --> USB[(USB\nrespaldo .db)]
+    SIS --> IMP[(Impresora<br/>comprobantes y cortes)]
+    SIS --> USB[(USB<br/>respaldo .db)]
 ```
 
 ### Nivel 2 — Contenedores
