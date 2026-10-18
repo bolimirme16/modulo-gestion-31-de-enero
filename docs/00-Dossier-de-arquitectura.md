@@ -425,7 +425,7 @@ Repositorio: https://github.com/bolimirme16/modulo-gestion-31-de-enero
 
 ## Registro de uso de inteligencia artificial
 
-Se usaron dos herramientas con roles distintos y complementarios: **Google Gemini** para generar el borrador del código Mermaid de los diagramas C4 y **Claude (Anthropic)** para la revisión crítica del borrador. No se ingresaron datos personales, credenciales ni información confidencial; el análisis, los pesos, las calificaciones y la decisión son de autoría del equipo.
+Se usaron dos herramientas con roles distintos y complementarios: **Google Gemini** para generar el borrador del código Mermaid de los diagramas C4 y **Claude (Anthropic)** para revisar el contenido del borrador y ayudar a encontrar errores y observaciones a corregir. No se ingresaron datos personales, credenciales ni información confidencial; el análisis, los pesos, las calificaciones y la decisión son de autoría del equipo.
 
 ### Tabla IA-1 · Google Gemini — generación de los diagramas C4 (Mermaid)
 
