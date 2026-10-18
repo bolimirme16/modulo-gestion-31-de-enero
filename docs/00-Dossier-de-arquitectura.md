@@ -174,6 +174,8 @@ flowchart LR
   sistema -->|"Exporta el respaldo del archivo .db con fecha"| usb
 ```
 
+*Figura 1. C4 nivel 1: contexto del Sistema de Gestión 31 de Enero (`docs/02-vistas-c4/c4-nivel1-contexto.md`).*
+
 ## Paso 6 · C4 nivel 2 — Contenedores
 
 Abre la caja del sistema para mostrar las aplicaciones y el almacén de datos con su **tecnología**, y las relaciones **etiquetadas**. Refleja la decisión de estilo del ADR-003 (Paso 15).
@@ -209,6 +211,8 @@ flowchart LR
   app -->|"Imprime comprobantes y cortes"| impresora
   db -->|"Exporta el respaldo .db con fecha"| usb
 ```
+
+*Figura 2. C4 nivel 2: contenedores (`docs/02-vistas-c4/c4-nivel2-contenedores.md`). En el repositorio el diagrama usa orientación horizontal (`flowchart LR`).*
 
 ## Paso 7 · ADR-001 y ADR-002
 
@@ -251,6 +255,9 @@ Revisión cruzada (intercambio entre equipos). Hallazgos y correcciones aplicada
 | 2 | La base de datos aparecía en el nivel 1 | Niveles separados | Modificar | La base de datos se movió al nivel 2 |
 | 3 | Se usaban “App” y “Aplicación” | Nombres consistentes | Modificar | Se unificó a “Aplicación” |
 | 4 | Faltaba el actor que audita (S3/S4) | Cobertura de stakeholders | Aceptar | Se agregó Directiva/Comisión de vigilancia |
+| 5 | Tras el borrador IA, una flecha Aplicación → Base de datos no tenía etiqueta | Relaciones etiquetadas | Modificar | Se agregó “Lee y escribe … - SQL” |
+
+Se rechazó la sugerencia de representar a los **69 socios como actores individuales**: no interactúan directamente con el sistema y su concern se canaliza por la secretaria y el corte impreso.
 
 ---
 
@@ -321,6 +328,19 @@ Justificación observable de cada calificación:
 - **Facilidad de cambio (E3):** A1 (4) reglas en un único `app.py`; A2 (3) redespliegue del servidor; A3 (5) servicio independiente por dominio.
 - **Desempeño y costo (E5):** A1 (5) consulta local indexada y $0; A2 (2) requiere servidor y su administración; A3 (1) varios servicios y habilidades que exceden al equipo.
 
+### Rúbrica de calificación (1 a 5)
+
+Los valores 2 y 4 se usan cuando la alternativa queda entre dos descripciones. En el criterio 6, un **5** significa el **menor costo y la menor carga**.
+
+| Criterio | 5 (mejor) | 3 (intermedio) | 1 (peor) |
+|----------|-----------|----------------|----------|
+| 1. Consistencia (E1) | Una transacción local garantiza 0 inconsistencias sin coordinar componentes | Requiere coordinar componentes (sagas/compensaciones) | No se puede garantizar la medida |
+| 2. Seguridad (E2) | Un solo punto de control y auditoría; poca superficie | Control en varios puntos; auditoría a consolidar | Control disperso, sin registro central |
+| 3. Offline (E4) | Abre y opera sin internet, sin instalar dependencias | Requiere red local o algún componente externo | No funciona sin internet/servidor |
+| 4. Fallos y respaldo (E6) | Respaldo de 1 artefacto y fallo aislado | Respaldo posible pero con componente extra que operar | El fallo detiene la operación o se pierden datos |
+| 5. Facilidad de cambio (E3) | Cambio en un componente que se despliega solo | Cambio acotado, con redespliegue completo | Cambio disperso |
+| 6. Desempeño y costo (E5) | Consulta local ágil; lo opera una persona con $0 | Un componente adicional operable | Varios servicios y habilidades que exceden al equipo |
+
 ## Paso 14 · Trade-offs y análisis de sensibilidad (ATAM simplificado)
 
 | Riesgo de la alternativa ganadora (A1) | Escenario | Mitigación |
@@ -367,6 +387,28 @@ Herramienta: **Google Gemini** (versión web, octubre de 2026). Se le pidió act
 ---
 
 # Cierre y entregables
+
+## Trazabilidad final (escenario → driver → ADR → vista C4)
+
+| Escenario | Driver | ADR que lo respalda | Vista C4 |
+|-----------|--------|---------------------|----------|
+| E1 Consistencia financiera | D1 | ADR-001, ADR-002, ADR-003 | Nivel 2: Aplicación → Base de datos |
+| E2 Seguridad y datos | D2 | ADR-002 | Nivel 1: Directiva/Comisión; Nivel 2: Aplicación (login y auditoría) |
+| E3 Facilidad de cambio | D3 | ADR-002, ADR-003 | Nivel 2: Aplicación |
+| E4 Operabilidad offline | D4 | ADR-003 | Nivel 2: Splash → Servidor → Ventana |
+| E5 Desempeño de consulta | D5 (y D6) | ADR-002 | Nivel 2: Aplicación → Impresora |
+| E6 Tolerancia a fallos y respaldo | D1, D5 | ADR-001, ADR-003 | Nivel 2: Base de datos → USB |
+
+El driver **D6** (corte y comprobante imprimible) se verifica a través de E1 y E5 y queda respaldado por el ADR-002.
+
+## Conclusiones
+
+- La decisión más difícil de cambiar es el **estilo monolítico local con persistencia en SQLite** (ADR-001 y ADR-003), porque atraviesa datos, reglas y empaquetado; por eso se documentó con alternativas, consecuencias y puntos de sensibilidad.
+- La **matriz ponderada** favorece al monolito web local (A1, **4,60**) frente al cliente-servidor en red (A2, 3,00) y a los microservicios en la nube (A3, 2,40), y el resultado se mantiene aun moviendo los pesos más discutibles (**4,45**).
+- El principal **riesgo aceptado** es la pérdida de datos por fallo del equipo local (E6), mitigado con el respaldo del archivo `.db` a USB y nueve chequeos de integridad.
+- La decisión debe **revisarse** si la asociación pasa a operar con varios usuarios, varios dispositivos o internet, ya que ese supuesto sostiene la ventaja de A1.
+
+## Entregables en el repositorio
 
 El dossier integra contexto, escenarios, vistas C4, ADR y matriz de decisión en el repositorio, con historial de commits y etiqueta del hito **v0.1.0**.
 
