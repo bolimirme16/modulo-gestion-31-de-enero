@@ -8,6 +8,10 @@
 
 > Este dossier integra las tres partes del trabajo de la unidad: **levantar** los drivers arquitectónicos (S1), **representar** y documentar la arquitectura (S2) y **decidir** el estilo con una matriz ponderada (S3). Todo el contenido se deriva del caso propio del equipo, según ISO/IEC/IEEE 42010:2022 e ISO/IEC 25010:2023. Los diagramas están en bloques **Mermaid** y se renderizan directamente en GitHub.
 
+## Objetivo
+
+Documentar el contexto del caso, los escenarios de calidad, las vistas C4 y los registros de decisión arquitectónica (ADR), justificando cada decisión con los atributos de calidad del caso y con verificación crítica del uso de inteligencia artificial. El trabajo sigue las tres partes de la unidad: **levantar** los drivers, **representar** la arquitectura con C4 y **decidir** el estilo con una matriz ponderada.
+
 ## Convenciones de identificadores
 
 | Prefijo | Significado | Valores en el caso |
@@ -139,7 +143,7 @@ Cada escenario tiene seis partes y una sola medida numérica comprobable. E6 se 
 
 ## Paso 9 · Contraste con IA (Parte I)
 
-Herramienta: **Google Gemini** (versión web, octubre de 2026). Se le entregó la descripción del caso sin datos personales ni credenciales y con el rol de revisor crítico: señalar concerns ambiguos, drivers no cubiertos por ISO/IEC 25010:2023 y escenarios sin medida verificable.
+Herramienta: **Claude (Anthropic)** (versión web, octubre de 2026). Se le entregó la descripción del caso sin datos personales ni credenciales y con el rol de revisor crítico: señalar concerns ambiguos, drivers no cubiertos por ISO/IEC 25010:2023 y escenarios sin medida verificable.
 
 | Qué se pidió | Qué respondió la IA | Aceptado | Modificado / rechazado | Cómo se verificó |
 |--------------|---------------------|----------|------------------------|------------------|
@@ -376,7 +380,7 @@ Los valores 2 y 4 se usan cuando la alternativa queda entre dos descripciones. E
 
 ## Paso 16 · Contraste con IA (abogado del diablo)
 
-Herramienta: **Google Gemini** (versión web, octubre de 2026). Se le pidió actuar como abogado del diablo de la decisión (sin proponer una arquitectura nueva) y devolver objeciones con el escenario afectado y la evidencia que cambiaría la decisión.
+Herramienta: **Claude (Anthropic)** (versión web, octubre de 2026). Se le pidió actuar como abogado del diablo de la decisión (sin proponer una arquitectura nueva) y devolver objeciones con el escenario afectado y la evidencia que cambiaría la decisión.
 
 | Objeción de la IA | Evidencia (escenario y medida) | Decisión | Verificación |
 |-------------------|-------------------------------|----------|--------------|
@@ -419,9 +423,29 @@ El dossier integra contexto, escenarios, vistas C4, ADR y matriz de decisión en
 
 Repositorio: https://github.com/bolimirme16/modulo-gestion-31-de-enero
 
-## Registro de uso de inteligencia artificial (resumen)
+## Registro de uso de inteligencia artificial
 
-Herramienta: **Google Gemini** (versión web, octubre de 2026). Usos: (1) borrador del código Mermaid de los diagramas C4 de los Pasos 5 y 6; (2) revisor crítico (abogado del diablo) de la decisión de estilo del Paso 15. Verificación: render del código, contraste elemento por elemento con la documentación del repositorio, revisión cruzada de nombres y niveles, y recálculo de la matriz de sensibilidad. No se ingresaron datos personales, credenciales ni información confidencial. El análisis, los pesos, las calificaciones y la decisión son de autoría del equipo.
+Se usaron dos herramientas con roles distintos y complementarios: **Google Gemini** para generar el borrador del código Mermaid de los diagramas C4 y **Claude (Anthropic)** para la revisión crítica del borrador. No se ingresaron datos personales, credenciales ni información confidencial; el análisis, los pesos, las calificaciones y la decisión son de autoría del equipo.
+
+### Tabla IA-1 · Google Gemini — generación de los diagramas C4 (Mermaid)
+
+| Campo | Descripción del estudiante |
+|-------|----------------------------|
+| **Tarea realizada** | Generar el borrador del código Mermaid de los diagramas C4: nivel 1 (contexto, Paso 5) y nivel 2 (contenedores, Paso 6). |
+| **Prompt utilizado (texto exacto)** | “Actúa como asistente de documentación de arquitectura. Con esta descripción del sistema (secretaria única; monolito Flask + SQLite + pywebview + waitress + PyInstaller; 100 % offline; impresora y USB), genera un borrador de diagrama C4 nivel 1 y nivel 2 como código Mermaid (flowchart LR). Usa solo los elementos de la descripción, no agregues contenedores ni tecnologías, no mezcles niveles, y da a cada relación un verbo y, en el nivel 2, la tecnología.” |
+| **Output recibido (resumen)** | Dos bloques `flowchart LR`: contexto (personas y sistemas externos) y contenedores (splash, servidor, aplicación, base de datos, ventana) con relaciones etiquetadas. |
+| **Correcciones realizadas** | Se agregaron etiquetas de tecnología (HTTP local, WSGI, SQL); se renombró “App” → “Aplicación”; la base de datos se movió del nivel 1 al nivel 2; se agregó el actor “Directiva / Comisión de vigilancia”; se añadió la etiqueta “Lee y escribe … - SQL”. |
+| **Valoración personal** | Útil como borrador de la sintaxis Mermaid; exigió revisión manual y de render; no se aceptó ningún elemento sin contrastarlo con el repositorio. |
+
+### Tabla IA-2 · Claude (Anthropic) — revisión crítica del borrador
+
+| Campo | Descripción del estudiante |
+|-------|----------------------------|
+| **Tarea realizada** | Revisar críticamente el borrador del dossier (contexto, drivers, escenarios, vistas C4, ADR y matriz) y la decisión de estilo, para detectar errores, ambigüedades e incoherencias (Pasos 9 y 16). |
+| **Prompt utilizado (texto exacto)** | “Actúa como revisor crítico y abogado del diablo de este dossier de arquitectura. Señala errores de redacción, concerns ambiguos, drivers no cubiertos por ISO/IEC 25010:2023, escenarios sin medida verificable e incoherencias entre partes; para la decisión, devuelve objeciones con el escenario afectado y la evidencia que la cambiaría. No reescribas el contenido ni propongas una arquitectura nueva.” |
+| **Output recibido (resumen)** | Observaciones: separar disponibilidad de desempeño; riesgo de pérdida de datos en un equipo local (E6); sesgo del criterio “costo” a favor del monolito; posible crecimiento a multiusuario; sugerencia de microservicios. |
+| **Correcciones realizadas** | Se aceptó D5 (desempeño/disponibilidad) y el riesgo de E6; se modificó el análisis de sensibilidad; se rechazó “rendimiento perceptible” (no medible), los microservicios “por modernidad” y modelar a los 69 socios como actores. |
+| **Valoración personal** | Ayudó a encontrar puntos ciegos; cada corrección se verificó contra las medidas de los escenarios y el repositorio; el contenido y las decisiones son del equipo. |
 
 ## Referencias (APA 7)
 
