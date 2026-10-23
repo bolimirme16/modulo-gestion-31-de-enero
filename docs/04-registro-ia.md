@@ -1,13 +1,19 @@
+Aquí tienes el archivo `04-registro-ia.md` actualizado con el registro de la Sesión 4, integrando ambas secciones de manera estructurada y profesional:
+
+```markdown
 # 04 · Registro del uso de inteligencia artificial
 
 **Proyecto:** Sistema de Gestión Automatizada y Auditoría — Asociación “31 de Enero Narciza de Jesús”
 **Actividad autónoma Semana 1 — Dossier de arquitectura · v0.1.0 · 18/10/2026**
+**Actividad autónoma Semana 2 — Cadena CASE y Especificación · v0.2.0 · 25/10/2026**
 
 > **Advertencia cumplida:** no se ingresaron datos personales (cédulas, nombres reales, domicilios, teléfonos), credenciales ni información confidencial de la asociación en ninguna herramienta de IA. Se usaron solo descripciones abstractas y cifras ya documentadas (montos y reglas).
 
 ---
 
-## Actividad 1 · Borrador de los diagramas C4 como código (Mermaid)
+## 1. Actividad autónoma · Semana 1 (Dossier de arquitectura)
+
+### Actividad 1 · Borrador de los diagramas C4 como código (Mermaid)
 
 | Campo | Registro |
 |-------|----------|
@@ -21,7 +27,7 @@
 
 ---
 
-## Actividad 2 · Revisión del contenido y contraste crítico de la decisión de estilo
+### Actividad 2 · Revisión del contenido y contraste crítico de la decisión de estilo
 
 | Campo | Registro |
 |-------|----------|
@@ -35,6 +41,43 @@
 
 ---
 
+## 2. Actividad autónoma · Semana 2 (Cadena CASE y Especificación)
+
+### Actividad 1 · Alternativas a las herramientas del mapa de toolchain (Sesión 4)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Google Gemini (versión web, octubre de 2026) |
+| **Prompt resumido** | “Actúa como ingeniero de software senior y revisor crítico de herramientas CASE. No propongas un diseño nuevo ni cambies mi análisis: complétalo y contrástalo. Para la tarea de diseño de contratos/APIs, propón herramientas alternativas a Swagger Editor.” |
+| **Salida** | Stoplight Studio como alternativa a Swagger Editor para el diseño visual de contratos OpenAPI. |
+| **Cómo se verificó** | Instalación y revisión de la licencia y documentación oficial de Stoplight Studio. |
+| **Aceptado** | Stoplight Studio como herramienta Upper CASE para el diseño de APIs. |
+| **Modificado** | Se decidió probarla en paralelo con Swagger Editor; el equipo la clasifica como Upper CASE con un nivel de riesgo medio. |
+| **Rechazado** | Propuestas de herramientas comerciales cerradas sin planes gratuitos viables para la asociación. |
+
+---
+
+### Actividad 2 · Tareas omitidas del proceso en el mapa de toolchain (Sesión 4)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Claude (Anthropic) (versión web, octubre de 2026) |
+| **Prompt resumido** | “Actúa como revisor crítico de procesos de software. Revisa las tareas identificadas en las seis fases del proceso y detecta tareas de alto volumen u omitidas que sean repetitivas, frecuentes o propensas a error.” |
+| **Salida** | Propuesta de incluir la tarea de escaneo automático de dependencias y vulnerabilidades en la fase de construcción/integración. |
+| **Cómo se verificó** | Contraste directo con el proceso definido en el Paso 1 del proyecto y los requerimientos de seguridad. |
+| **Aceptado** | La inclusión del escaneo de dependencias como candidata para fases posteriores (Lower CASE, riesgo medio). |
+| **Modificado** | Se ajustó el posicionamiento para considerarla dentro de las mejoras incrementales tras el MVP. |
+| **Rechazado** | Sugerencias de integrar herramientas de análisis dinámico pesado (DAST) debido al entorno completamente offline y local del sistema (`pywebview` + SQLite). |
+
+---
+
 ## Declaración final del equipo
 
-El análisis del contexto, los stakeholders, las restricciones, los drivers, los escenarios, la priorización, los pesos y la decisión de estilo son **de autoría del equipo**. La IA se usó **solo** para (1) redactar el borrador del código Mermaid de los diagramas C4, con **Google Gemini**, y (2) revisar el contenido del borrador y ayudar a encontrar errores y observaciones a corregir —incluido el contraste crítico (abogado del diablo) de la decisión de estilo—, con **Claude (Anthropic)**. Toda salida fue **verificada** contra el análisis propio y la documentación del repositorio; lo no verificable se rechazó. El equipo asume la responsabilidad del contenido del dossier.
+El análisis del contexto, los stakeholders, las restricciones, los drivers, los escenarios, la priorización, los pesos, la decisión de estilo y la cadena CASE son **de autoría del equipo**. La IA se usó **solo** para:
+1. Redactar el borrador del código Mermaid de los diagramas C4 (**Google Gemini**).
+2. Revisar el contenido del borrador y ayudar a encontrar errores y observaciones a corregir —incluido el contraste crítico de la decisión de estilo— (**Claude**).
+3. Proponer alternativas de herramientas y detectar tareas omitidas en el mapa de toolchain (**Google Gemini / Claude**).
+
+Toda salida fue **verificada** contra el análisis propio y la documentación del repositorio; lo no verificable se rechazó. El equipo asume la responsabilidad integral del contenido del dossier y los artefactos del proyecto.
+
+```
