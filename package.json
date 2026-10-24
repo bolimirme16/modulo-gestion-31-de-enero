@@ -1,0 +1,28 @@
+{
+  "name": "modulo-gestion-31-de-enero",
+  "version": "1.0.0",
+  "description": "**Módulo 8 · Automatización de proceso de software (UPEC)**\r **Hito H1 · v0.1.0 · 18/10/2026** — Dossier de arquitectura (SEM01)\r **Hito H2 · v0.2.0 · 25/10/2026** — Cadena CASE y especificación (SEM02)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bolimirme16/modulo-gestion-31-de-enero.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bolimirme16/modulo-gestion-31-de-enero/issues"
+  },
+  "homepage": "https://github.com/bolimirme16/modulo-gestion-31-de-enero#readme",
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.3.0"
+  }
+}
