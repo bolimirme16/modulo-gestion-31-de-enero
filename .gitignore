@@ -15,3 +15,9 @@ venv/
 # Windows
 Thumbs.db
 Desktop.ini
+
+# Herramientas CASE locales (Node): dependencias y cachés
+node_modules/
+.npm/
+.ruff_cache/
+.pytest_cache/

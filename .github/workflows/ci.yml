@@ -1,0 +1,44 @@
+name: Cadena CASE (SEM02)
+
+# Integración continua (I-CASE): valida el contrato, lintea y ejecuta las pruebas
+# en cada push y en cada Pull Request, antes de aprobar el merge.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cadena-case:
+    name: Spectral + Ruff + pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependencias de Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Instalar Spectral
+        run: npm install -g @stoplight/spectral-cli
+
+      - name: Validar el contrato OpenAPI (T4)
+        run: spectral lint api/openapi.yaml
+
+      - name: Análisis estático del código (T8)
+        run: ruff check src tests
+
+      - name: Pruebas unitarias, de integración y BDD (T7)
+        run: pytest -v
