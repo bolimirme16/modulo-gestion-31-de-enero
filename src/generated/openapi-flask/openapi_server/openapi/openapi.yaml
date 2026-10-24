@@ -1,0 +1,1148 @@
+openapi: 3.0.3
+info:
+  contact:
+    name: Equipo de desarrollo — Módulo 8 UPEC
+    url: https://github.com/bolimirme16/modulo-gestion-31-de-enero
+  description: |
+    Contrato de la API local del Sistema de Gestión Automatizada y Auditoría de la
+    Asociación “31 de Enero Narciza de Jesús”. El servicio se ejecuta en una sola PC,
+    monousuario y 100 % offline (R4).
+
+    Trazabilidad con el Dossier de Arquitectura v0.1.0:
+    - Escenarios E1 (consistencia financiera), E2 (seguridad), E5 (desempeño), E6 (integridad).
+    - Drivers D1, D2, D4, D5 y D6.
+    - ADR-001 (SQLite local), ADR-002 (reglas financieras centralizadas), ADR-003 (monolito local).
+
+    Minimización de datos (R1, LOPDP): la cédula es un dato personal y **nunca** se
+    devuelve en las respuestas. Los recursos se identifican con un `socioId` sustituto
+    (UUID interno). El único campo con dato personal es `identificacion`, marcado
+    `writeOnly` en el alta de socios.
+  license:
+    name: MIT
+  title: API del Sistema de Gestión y Auditoría — Asociación 31 de Enero
+  version: 0.2.0
+servers:
+- description: Servicio local del monolito (offline).
+  url: http://127.0.0.1:8080/api/v1
+tags:
+- description: "Registro, consulta y estado de cuenta de los socios."
+  name: Socios
+- description: "Reunión mensual del último sábado; asistencia, café, cuotas y cierre."
+  name: Reuniones
+- description: Corte y arqueo de caja chica de la reunión.
+  name: Caja
+- description: Respaldo e integridad de la base de datos local.
+  name: Sistema
+paths:
+  /reuniones/{reunionId}/asistencia:
+    post:
+      description: |
+        Registra la asistencia del socio en la reunión. Si el estado es `AUSENTE`
+        genera la multa fija de $5,00 (E1). No admite dos registros del mismo socio
+        en la misma reunión (R2).
+      operationId: registrar_asistencia
+      parameters:
+      - description: Identificador interno (UUID) de la reunión mensual.
+        explode: false
+        in: path
+        name: reunionId
+        required: true
+        schema:
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistroAsistencia"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Asistencia"
+          description: Asistencia registrada.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión está cerrada y no admite cambios (ADR-002).
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El socio ya tiene asistencia registrada en esta reunión.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión o el socio no existen.
+      summary: Registrar asistencia de un socio
+      tags:
+      - Reuniones
+      x-openapi-router-controller: openapi_server.controllers.reuniones_controller
+  /reuniones/{reunionId}/cafe:
+    post:
+      description: |
+        Cobra el café según el grupo de rotación: $1,50 si el socio pertenece al
+        grupo de turno de la reunión y $3,00 en caso contrario (E1, ADR-002). Solo
+        admite un cobro por socio y reunión (R2).
+      operationId: registrar_cafe
+      parameters:
+      - description: Identificador interno (UUID) de la reunión mensual.
+        explode: false
+        in: path
+        name: reunionId
+        required: true
+        schema:
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistroCafe"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CobroCafe"
+          description: Cobro de café registrado.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión está cerrada y no admite cambios (ADR-002).
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El socio ya tiene un cobro de café en esta reunión.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión o el socio no existen.
+      summary: Registrar el cobro del servicio de café
+      tags:
+      - Reuniones
+      x-openapi-router-controller: openapi_server.controllers.reuniones_controller
+  /reuniones/{reunionId}/caja:
+    get:
+      description: |
+        Devuelve el arqueo de caja chica con la verificación de consistencia
+        `FondoInicial + CobrosEfectivo − Egresos = Total` (E1).
+      operationId: obtener_corte_caja
+      parameters:
+      - description: Identificador interno (UUID) de la reunión mensual.
+        explode: false
+        in: path
+        name: reunionId
+        required: true
+        schema:
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CorteCaja"
+          description: Corte de caja de la reunión.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión no existe.
+      summary: Obtener el corte de caja
+      tags:
+      - Caja
+      x-openapi-router-controller: openapi_server.controllers.caja_controller
+  /reuniones/{reunionId}/cierre:
+    post:
+      description: |
+        Consolida los totales y congela la reunión. Una vez cerrada, cualquier cambio
+        se rechaza (ADR-002). La operación se completa en ≤ 2 s (E1).
+      operationId: cerrar_reunion
+      parameters:
+      - description: Identificador interno (UUID) de la reunión mensual.
+        explode: false
+        in: path
+        name: reunionId
+        required: true
+        schema:
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cierre"
+          description: Reunión cerrada con los totales consolidados.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión ya estaba cerrada.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión no existe.
+      summary: Cerrar la reunión (bloqueante)
+      tags:
+      - Reuniones
+      x-openapi-router-controller: openapi_server.controllers.reuniones_controller
+  /reuniones/{reunionId}/cuotas:
+    post:
+      description: |
+        Registra la cuota mensual de $25,00 y los abonos parciales. Recalcula el saldo
+        como `Cuota − Suma(abonos)` y rechaza el sobrepago (E1, ADR-002).
+      operationId: registrar_cuota
+      parameters:
+      - description: Identificador interno (UUID) de la reunión mensual.
+        explode: false
+        in: path
+        name: reunionId
+        required: true
+        schema:
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistroCuota"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cuota"
+          description: Cuota o abono registrado.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión está cerrada y no admite cambios (ADR-002).
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El abono supera el saldo pendiente.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La reunión o el socio no existen.
+      summary: Registrar el pago de la cuota mensual
+      tags:
+      - Reuniones
+      x-openapi-router-controller: openapi_server.controllers.reuniones_controller
+  /sistema/integridad:
+    get:
+      description: |
+        Ejecuta los 9 chequeos de integridad de SQLite y devuelve el resultado. La
+        medida de E6 exige 9 de 9 chequeos correctos.
+      operationId: verificar_integridad
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Integridad"
+          description: Resultado de los chequeos de integridad.
+      summary: Verificar la integridad de la base de datos
+      tags:
+      - Sistema
+      x-openapi-router-controller: openapi_server.controllers.sistema_controller
+  /sistema/respaldo:
+    post:
+      description: |
+        Copia el archivo `asociacion.db` a la unidad USB con marca de tiempo. La
+        medida de E6 exige que el respaldo se complete en ≤ 5 s.
+      operationId: crear_respaldo
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Respaldo"
+          description: Respaldo iniciado y completado.
+      summary: Crear un respaldo de la base de datos
+      tags:
+      - Sistema
+      x-openapi-router-controller: openapi_server.controllers.sistema_controller
+  /socios:
+    get:
+      description: Devuelve el padrón de socios. No expone cédulas ni datos personales.
+      operationId: listar_socios
+      parameters:
+      - description: Filtra por estado del socio.
+        explode: true
+        in: query
+        name: estado
+        required: false
+        schema:
+          enum:
+          - ACTIVO
+          - INACTIVO
+          example: ACTIVO
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Socio"
+                type: array
+          description: Padrón de socios.
+      summary: Listar socios
+      tags:
+      - Socios
+      x-openapi-router-controller: openapi_server.controllers.socios_controller
+    post:
+      description: |
+        Da de alta un socio. Aplica R6 (máximo 69 socios) y la unicidad de la
+        identificación. La cédula enviada en `identificacion` no se devuelve.
+      operationId: crear_socio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NuevoSocio"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Socio"
+          description: Socio registrado.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: La identificación ya está registrada.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Datos inválidos o límite de 69 socios alcanzado.
+      summary: Registrar un socio
+      tags:
+      - Socios
+      x-openapi-router-controller: openapi_server.controllers.socios_controller
+  /socios/{socioId}:
+    get:
+      description: Devuelve la ficha de un socio por su identificador interno.
+      operationId: obtener_socio
+      parameters:
+      - description: Identificador interno (UUID) del socio.
+        explode: false
+        in: path
+        name: socioId
+        required: true
+        schema:
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Socio"
+          description: Ficha del socio.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El socio no existe.
+      summary: Consultar un socio
+      tags:
+      - Socios
+      x-openapi-router-controller: openapi_server.controllers.socios_controller
+  /socios/{socioId}/comprobante:
+    get:
+      description: |
+        Devuelve el detalle imprimible del comprobante (logo, firma y sello se
+        componen en la capa de presentación). Respalda el driver D6.
+      operationId: obtener_comprobante
+      parameters:
+      - description: Identificador interno (UUID) del socio.
+        explode: false
+        in: path
+        name: socioId
+        required: true
+        schema:
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          type: string
+        style: simple
+      - description: Período mensual del comprobante.
+        explode: true
+        in: query
+        name: periodo
+        required: true
+        schema:
+          example: 2026-10
+          pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comprobante"
+          description: Comprobante del socio para el período.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El socio no existe o no hay movimientos en el período.
+      summary: Generar el comprobante de pago
+      tags:
+      - Socios
+      x-openapi-router-controller: openapi_server.controllers.socios_controller
+  /socios/{socioId}/estado-cuenta:
+    get:
+      description: |
+        Devuelve los cargos (cuota, multa, café) y abonos del socio, con el saldo
+        calculado. Respalda el escenario E5 (consulta en la cola final).
+      operationId: consultar_estado_cuenta
+      parameters:
+      - description: Identificador interno (UUID) del socio.
+        explode: false
+        in: path
+        name: socioId
+        required: true
+        schema:
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          type: string
+        style: simple
+      - description: Período mensual en formato AAAA-MM.
+        explode: true
+        in: query
+        name: periodo
+        required: false
+        schema:
+          example: 2026-10
+          pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstadoCuenta"
+          description: Estado de cuenta del socio.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: El socio no existe.
+      summary: Consultar el estado de cuenta
+      tags:
+      - Socios
+      x-openapi-router-controller: openapi_server.controllers.socios_controller
+components:
+  parameters:
+    SocioId:
+      description: Identificador interno (UUID) del socio.
+      explode: false
+      in: path
+      name: socioId
+      required: true
+      schema:
+        example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        format: uuid
+        type: string
+      style: simple
+    ReunionId:
+      description: Identificador interno (UUID) de la reunión mensual.
+      explode: false
+      in: path
+      name: reunionId
+      required: true
+      schema:
+        example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+        format: uuid
+        type: string
+      style: simple
+  schemas:
+    Socio:
+      description: Socio de la asociación (sin datos personales expuestos).
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        nombres: Juan Pérez
+        grupoCafe: 3
+        estado: ACTIVO
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        nombres:
+          description: Nombre del socio.
+          example: Juan Pérez
+          title: nombres
+          type: string
+        grupoCafe:
+          description: Grupo de rotación de café (10 comisiones).
+          example: 3
+          maximum: 10
+          minimum: 1
+          title: grupoCafe
+          type: integer
+        estado:
+          description: "Estado del socio (baja lógica, R6)."
+          enum:
+          - ACTIVO
+          - INACTIVO
+          example: ACTIVO
+          title: estado
+          type: string
+      required:
+      - estado
+      - grupoCafe
+      - nombres
+      - socioId
+      title: Socio
+      type: object
+    NuevoSocio:
+      description: Datos para el alta de un socio.
+      example:
+        nombres: Juan Pérez
+        grupoCafe: 3
+        identificacion: "1002345678"
+      properties:
+        nombres:
+          description: Nombre del socio.
+          example: Juan Pérez
+          title: nombres
+          type: string
+        grupoCafe:
+          description: Grupo de rotación de café.
+          example: 3
+          maximum: 10
+          minimum: 1
+          title: grupoCafe
+          type: integer
+        identificacion:
+          description: |
+            Cédula del socio (dato personal, LOPDP R1). Es `writeOnly`: se almacena
+            para garantizar la unicidad y **no** se devuelve en ninguna respuesta.
+          example: "1002345678"
+          title: identificacion
+          type: string
+          writeOnly: true
+      required:
+      - grupoCafe
+      - identificacion
+      - nombres
+      title: NuevoSocio
+      type: object
+    RegistroAsistencia:
+      description: Registro de la asistencia de un socio a la reunión.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        estado: AUSENTE
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        estado:
+          description: "Estado de asistencia; `AUSENTE` genera la multa de $5,00."
+          enum:
+          - PRESENTE
+          - AUSENTE
+          - JUSTIFICADO
+          example: AUSENTE
+          title: estado
+          type: string
+      required:
+      - estado
+      - socioId
+      title: RegistroAsistencia
+      type: object
+    Asistencia:
+      description: Asistencia registrada con la multa aplicada.
+      example:
+        asistenciaId: 8c3f5a72-1d4b-4e6a-9f27-3b8c0a1d2e45
+        reunionId: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        estado: AUSENTE
+        multa: 5.0
+      properties:
+        asistenciaId:
+          description: Identificador del registro de asistencia.
+          example: 8c3f5a72-1d4b-4e6a-9f27-3b8c0a1d2e45
+          format: uuid
+          title: asistenciaId
+          type: string
+        reunionId:
+          description: Reunión a la que corresponde el registro.
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          title: reunionId
+          type: string
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        estado:
+          description: Estado de asistencia registrado.
+          enum:
+          - PRESENTE
+          - AUSENTE
+          - JUSTIFICADO
+          example: AUSENTE
+          title: estado
+          type: string
+        multa:
+          description: "Multa generada en dólares ($5,00 si hubo inasistencia)."
+          example: 5.0
+          format: double
+          title: multa
+          type: number
+      required:
+      - asistenciaId
+      - estado
+      - multa
+      - reunionId
+      - socioId
+      title: Asistencia
+      type: object
+    RegistroCafe:
+      description: Cobro del servicio de café.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        grupoTurno: 4
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        grupoTurno:
+          description: "Grupo de turno de la reunión (por defecto, el de la reunió\
+            n)."
+          example: 4
+          maximum: 10
+          minimum: 1
+          title: grupoTurno
+          type: integer
+      required:
+      - socioId
+      title: RegistroCafe
+      type: object
+    CobroCafe:
+      description: Cobro de café aplicado según el grupo de turno.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        tarifa: 1.5
+        grupoTurno: 4
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        tarifa:
+          description: "Tarifa aplicada ($1,50 grupo de turno; $3,00 resto)."
+          example: 1.5
+          format: double
+          title: tarifa
+          type: number
+        grupoTurno:
+          description: Grupo de turno vigente en la reunión.
+          example: 4
+          maximum: 10
+          minimum: 1
+          title: grupoTurno
+          type: integer
+      required:
+      - grupoTurno
+      - socioId
+      - tarifa
+      title: CobroCafe
+      type: object
+    RegistroCuota:
+      description: Pago o abono de la cuota mensual.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        periodo: 2026-10
+        monto: 10.0
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        periodo:
+          description: Período mensual en formato AAAA-MM.
+          example: 2026-10
+          pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
+          title: periodo
+          type: string
+        monto:
+          description: Monto abonado en dólares.
+          example: 10.0
+          format: double
+          minimum: 0.01
+          title: monto
+          type: number
+      required:
+      - monto
+      - periodo
+      - socioId
+      title: RegistroCuota
+      type: object
+    Cuota:
+      description: Estado de la cuota del socio tras el pago.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        periodo: 2026-10
+        montoTotal: 25.0
+        abonado: 10.0
+        saldo: 15.0
+        estado: PARCIAL
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        periodo:
+          description: Período mensual.
+          example: 2026-10
+          pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
+          title: periodo
+          type: string
+        montoTotal:
+          description: "Cuota mensual vigente ($25,00)."
+          example: 25.0
+          format: double
+          title: montoTotal
+          type: number
+        abonado:
+          description: Total abonado a la fecha.
+          example: 10.0
+          format: double
+          title: abonado
+          type: number
+        saldo:
+          description: Saldo pendiente (Cuota − abonado).
+          example: 15.0
+          format: double
+          title: saldo
+          type: number
+        estado:
+          description: Estado de la cuota.
+          enum:
+          - PAGADO
+          - PARCIAL
+          - PENDIENTE
+          example: PARCIAL
+          title: estado
+          type: string
+      required:
+      - abonado
+      - estado
+      - montoTotal
+      - periodo
+      - saldo
+      - socioId
+      title: Cuota
+      type: object
+    EstadoCuenta:
+      description: Estado de cuenta consolidado del socio.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        saldo: 15.0
+        cargos:
+        - concepto: MULTA
+          monto: 5.0
+        - concepto: MULTA
+          monto: 5.0
+        abonos:
+        - concepto: CUOTA
+          monto: 10.0
+        - concepto: CUOTA
+          monto: 10.0
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        saldo:
+          description: Saldo pendiente total.
+          example: 15.0
+          format: double
+          title: saldo
+          type: number
+        cargos:
+          description: "Cargos aplicados (cuota, multa, café)."
+          items:
+            $ref: "#/components/schemas/Cargo"
+          title: cargos
+          type: array
+        abonos:
+          description: Abonos registrados.
+          items:
+            $ref: "#/components/schemas/Abono"
+          title: abonos
+          type: array
+      required:
+      - abonos
+      - cargos
+      - saldo
+      - socioId
+      title: EstadoCuenta
+      type: object
+    Cargo:
+      description: Cargo aplicado a la cuenta de un socio.
+      example:
+        concepto: MULTA
+        monto: 5.0
+      properties:
+        concepto:
+          description: Concepto del cargo.
+          enum:
+          - CUOTA
+          - MULTA
+          - CAFE
+          example: MULTA
+          title: concepto
+          type: string
+        monto:
+          description: Monto del cargo en dólares.
+          example: 5.0
+          format: double
+          title: monto
+          type: number
+      required:
+      - concepto
+      - monto
+      title: Cargo
+      type: object
+    Abono:
+      description: Abono registrado en la cuenta de un socio.
+      example:
+        concepto: CUOTA
+        monto: 10.0
+      properties:
+        concepto:
+          description: Concepto del abono.
+          example: CUOTA
+          title: concepto
+          type: string
+        monto:
+          description: Monto abonado en dólares.
+          example: 10.0
+          format: double
+          title: monto
+          type: number
+      required:
+      - concepto
+      - monto
+      title: Abono
+      type: object
+    Comprobante:
+      description: Comprobante de pago imprimible.
+      example:
+        socioId: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+        periodo: 2026-10
+        detalle:
+        - concepto: MULTA
+          monto: 5.0
+        - concepto: MULTA
+          monto: 5.0
+        total: 30.0
+      properties:
+        socioId:
+          description: Identificador interno del socio.
+          example: 6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90
+          format: uuid
+          title: socioId
+          type: string
+        periodo:
+          description: Período del comprobante.
+          example: 2026-10
+          pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
+          title: periodo
+          type: string
+        detalle:
+          description: Detalle de rubros del comprobante.
+          items:
+            $ref: "#/components/schemas/Cargo"
+          title: detalle
+          type: array
+        total:
+          description: Total del comprobante.
+          example: 30.0
+          format: double
+          title: total
+          type: number
+      required:
+      - detalle
+      - periodo
+      - socioId
+      - total
+      title: Comprobante
+      type: object
+    Cierre:
+      description: Resultado del cierre bloqueante de la reunión.
+      example:
+        reunionId: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+        estado: CERRADA
+        totalIngresos: 550.0
+        consistente: true
+      properties:
+        reunionId:
+          description: Reunión cerrada.
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          title: reunionId
+          type: string
+        estado:
+          description: Estado de la reunión tras el cierre.
+          enum:
+          - ABIERTA
+          - CERRADA
+          example: CERRADA
+          title: estado
+          type: string
+        totalIngresos:
+          description: Total de ingresos consolidado.
+          example: 550.0
+          format: double
+          title: totalIngresos
+          type: number
+        consistente:
+          description: Indica que no hay inconsistencias en el corte (E1).
+          example: true
+          title: consistente
+          type: boolean
+      required:
+      - consistente
+      - estado
+      - reunionId
+      - totalIngresos
+      title: Cierre
+      type: object
+    CorteCaja:
+      description: Arqueo de caja chica de la reunión.
+      example:
+        reunionId: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+        fondoInicial: 100.0
+        cobrosEfectivo: 450.0
+        egresos: 0.0
+        total: 550.0
+        consistente: true
+      properties:
+        reunionId:
+          description: Reunión del corte.
+          example: 2a7d9c14-5b6e-4f38-8a1b-9c0d2e4f6a11
+          format: uuid
+          title: reunionId
+          type: string
+        fondoInicial:
+          description: Fondo inicial de caja.
+          example: 100.0
+          format: double
+          title: fondoInicial
+          type: number
+        cobrosEfectivo:
+          description: Total de cobros en efectivo.
+          example: 450.0
+          format: double
+          title: cobrosEfectivo
+          type: number
+        egresos:
+          description: Egresos de caja chica.
+          example: 0.0
+          format: double
+          title: egresos
+          type: number
+        total:
+          description: Fondo inicial + cobros − egresos.
+          example: 550.0
+          format: double
+          title: total
+          type: number
+        consistente:
+          description: Verdadero si el arqueo cuadra sin inconsistencias.
+          example: true
+          title: consistente
+          type: boolean
+      required:
+      - cobrosEfectivo
+      - consistente
+      - egresos
+      - fondoInicial
+      - reunionId
+      - total
+      title: CorteCaja
+      type: object
+    Integridad:
+      description: Resultado de los chequeos de integridad de SQLite (E6).
+      example:
+        resultado: ok
+        chequeosSuperados: 9
+        errores: 0
+        chequeos:
+        - integridad_fisica
+        - claves_foraneas
+        - indices
+        - duplicados_cedula
+      properties:
+        resultado:
+          description: Resultado global del diagnóstico.
+          enum:
+          - ok
+          - error
+          example: ok
+          title: resultado
+          type: string
+        chequeosSuperados:
+          description: Número de chequeos superados (se exigen 9).
+          example: 9
+          title: chequeosSuperados
+          type: integer
+        errores:
+          description: Número de chequeos fallidos.
+          example: 0
+          title: errores
+          type: integer
+        chequeos:
+          description: Nombre de cada chequeo ejecutado.
+          example:
+          - integridad_fisica
+          - claves_foraneas
+          - indices
+          - duplicados_cedula
+          items:
+            type: string
+          title: chequeos
+          type: array
+      required:
+      - chequeos
+      - chequeosSuperados
+      - errores
+      - resultado
+      title: Integridad
+      type: object
+    Respaldo:
+      description: Resultado del respaldo de la base de datos.
+      example:
+        archivo: asociacion_20261031.db
+        destino: E:\respaldos
+        bytes: 245760
+        estado: COMPLETADO
+      properties:
+        archivo:
+          description: Nombre del archivo de respaldo con marca de tiempo.
+          example: asociacion_20261031.db
+          title: archivo
+          type: string
+        destino:
+          description: Unidad de destino del respaldo.
+          example: E:\respaldos
+          title: destino
+          type: string
+        bytes:
+          description: Tamaño del respaldo en bytes.
+          example: 245760
+          title: bytes
+          type: integer
+        estado:
+          description: Estado del respaldo.
+          enum:
+          - COMPLETADO
+          - ERROR
+          example: COMPLETADO
+          title: estado
+          type: string
+      required:
+      - archivo
+      - bytes
+      - destino
+      - estado
+      title: Respaldo
+      type: object
+    Error:
+      description: Error de negocio o de validación.
+      example:
+        codigo: REUNION_CERRADA
+        mensaje: "Operación denegada: la reunión está cerrada y congelada para auditorí\
+          a."
+      properties:
+        codigo:
+          description: Código del error.
+          example: REUNION_CERRADA
+          title: codigo
+          type: string
+        mensaje:
+          description: Mensaje legible para la operadora.
+          example: "Operación denegada: la reunión está cerrada y congelada para auditorí\
+            a."
+          title: mensaje
+          type: string
+      required:
+      - codigo
+      - mensaje
+      title: Error
+      type: object
