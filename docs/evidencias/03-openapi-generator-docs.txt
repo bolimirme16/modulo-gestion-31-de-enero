@@ -1,0 +1,13 @@
+﻿COMMAND: openapi-generator-cli generate -i api/openapi.yaml -g html2 -o docs/api
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: html2 (documentation)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'html2' is considered stable.
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\docs\api\index.html
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\docs\api\.openapi-generator-ignore (Skipped by supportingFiles options supplied by user.)
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\docs\api\.openapi-generator\VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\docs\api\.openapi-generator\FILES
+############################################################################################
+# Thanks for using OpenAPI Generator.                                                      #
+# We appreciate your support! Please consider donating to help us maintain this project.   #
+# https://opencollective.com/openapi_generator/donate                                      #
+############################################################################################

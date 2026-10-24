@@ -1,0 +1,5 @@
+﻿COMMAND: ruff check src tests
+All checks passed!
+
+COMMAND: ruff --version
+ruff 0.15.21

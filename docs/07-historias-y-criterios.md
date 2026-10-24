@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema de Gestión Automatizada y Auditoría para la Asociación "31 de Enero Narciza de Jesús"  
 **Módulo:** Módulo 8 - Automatización de proceso de software (Maestría en Ingeniería de Software - UPEC)  
-**Artefacto:** `docs/06-historias-y-criterios.md`  
+**Artefacto:** `docs/07-historias-y-criterios.md`  
 **Versión:** v0.2.0 (Hito H2 - Cadena CASE)  
 **Trazabilidad:** Dossier de Arquitectura v0.1.0 (`docs/01-contexto-y-drivers.md`, `docs/03-adr/`)  
 
@@ -10,17 +10,23 @@
 
 ## 1. Matriz de Trazabilidad Requisitos - Arquitectura - Pruebas BDD
 
-La siguiente matriz establece la alineación punto a punto entre los requerimientos del negocio, los escenarios de calidad definidos en el Dossier de Arquitectura, las decisiones de diseño (ADR), las historias de usuario (HU), los endpoints definidos en OpenAPI y las tareas del mapa de toolchain (`docs/05-mapa-toolchain.md`).
+La siguiente matriz establece la alineación punto a punto entre los requerimientos del negocio, los escenarios de calidad definidos en el Dossier de Arquitectura, las decisiones de diseño (ADR), las historias de usuario (HU), los endpoints definidos en OpenAPI y las tareas del mapa de toolchain (`docs/06-mapa-toolchain.md`).
 
 | ID HU | Historia de Usuario | Escenario Dossier | Atributo de Calidad / Regla de Negocio | Endpoint OpenAPI | ADR Vinculado | Tarea Toolchain |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
-| **HU-01** | Registro y Mantenimiento de Socios | R6, D2 | Máximo 69 socios, unicidad de cédula, baja lógica sin borrado físico. | `POST /socios`<br>`GET /socios/{cedula}` | ADR-001, ADR-002 | T1, T2, T6, T7 |
+| **HU-01** | Registro y Mantenimiento de Socios | R6, D2 | Máximo 69 socios, unicidad de cédula, baja lógica sin borrado físico. | `POST /socios`<br>`GET /socios/{socioId}` | ADR-001, ADR-002 | T1, T2, T6, T7 |
 | **HU-02** | Control de Asistencia y Registro de Multas | E1, E2, D1 | Multa fija de $5.00 por inasistencia no justificada a la reunión mensual. | `POST /reuniones/{id}/asistencia` | ADR-001, ADR-002 | T1, T2, T6, T7 |
 | **HU-03** | Gestión de Cobro de Servicio de Café | E1, D1, R2 | Tarifas de café: $1.50 para grupo en turno (1 de 10) y $3.00 para los demás. | `POST /reuniones/{id}/cafe` | ADR-002 | T1, T6, T7 |
-| **HU-04** | Registro de Cuota Mensual y Manejo de Abonos | E1, D1, R2 | Cuota fija de $25.00/mes; cálculo exacto de saldo adeudado y abonos parciales. | `POST /reuniones/{id}/cuota` | ADR-001, ADR-002 | T1, T6, T7 |
-| **HU-05** | Apertura, Arqueo y Cierre Bloqueante de Caja Chica | E1, D1, D6 | Cierre de sesión en $\le 2\text{ s}$; congela cobros y previene modificaciones retroactivas. | `POST /reuniones/{id}/cierre`<br>`GET /caja/corte` | ADR-001, ADR-002, ADR-003 | T1, T4, T6, T7 |
-| **HU-06** | Consulta de Estado de Cuenta e Impresión de Comprobantes | E5, D4, D6 | Búsqueda por cédula en $\le 1\text{ s}$; generación de comprobante con logo, firma y sello. | `GET /socios/{cedula}/comprobante` | ADR-002, ADR-003 | T1, T5, T6 |
-| **HU-07** | Respaldo Automatizado y Verificación de Integridad | E6, D1, D5 | Copia de respaldo de `asociacion.db` a USB en $\le 5\text{ s}$; 9 chequeos de integridad SQL. | `POST /sistema/respaldo`<br>`GET /sistema/integridad` | ADR-001, ADR-003 | T1, T7, T8 |
+| **HU-04** | Registro de Cuota Mensual y Manejo de Abonos | E1, D1, R2 | Cuota fija de $25.00/mes; cálculo exacto de saldo adeudado y abonos parciales. | `POST /reuniones/{id}/cuotas` | ADR-001, ADR-002 | T1, T6, T7 |
+| **HU-05** | Apertura, Arqueo y Cierre Bloqueante de Caja Chica | E1, D1, D6 | Cierre de sesión en ≤ 2 s; congela cobros y previene modificaciones retroactivas. | `POST /reuniones/{id}/cierre`<br>`GET /reuniones/{id}/caja` | ADR-001, ADR-002, ADR-003 | T1, T4, T6, T7 |
+| **HU-06** | Consulta de Estado de Cuenta e Impresión de Comprobantes | E5, D4, D6 | Búsqueda por cédula en ≤ 1 s; generación de comprobante con logo, firma y sello. | `GET /socios/{socioId}/comprobante` | ADR-002, ADR-003 | T1, T5, T6 |
+| **HU-07** | Respaldo Automatizado y Verificación de Integridad | E6, D1, D5 | Copia de respaldo de `asociacion.db` a USB en ≤ 5 s; 9 chequeos de integridad SQL. | `POST /sistema/respaldo`<br>`GET /sistema/integridad` | ADR-001, ADR-003 | T1, T7, T8 |
+
+> **Nota de minimización de datos (R1 / LOPDP):** el contrato `api/openapi.yaml` **no**
+> expone la cédula. Los recursos se identifican con `socioId` (UUID interno) y la
+> identificación se acepta únicamente como campo `writeOnly` en el alta de socios; por
+> eso la consulta es `GET /socios/{socioId}` y no `GET /socios/{cedula}`. La relación
+> entre la columna de cédula y el `socioId` ocurre solo dentro de la base local.
 
 ---
 
@@ -86,7 +92,7 @@ Característica: HU-01 - Registro y Mantenimiento de Socios
 #### **Criterios de Aceptación (Medidas Numéricas Verificables):**
 1. **Consistencia de Multa:** Cada inasistencia no justificada genera exactamente un cargo de **$5.00** en el estado de cuenta del socio (Escenario E1).
 2. **Restricción de Período:** No se permite registrar más de una asistencia o multa por socio en una misma fecha de reunión (`UNIQUE(cedula, fecha_reunion)`).
-3. **Tiempo de Respuesta:** El registro individual o en lote de asistencia debe responder en un tiempo $\le 1.0	ext{ s}$ en la interfaz local.
+3. **Tiempo de Respuesta:** El registro individual o en lote de asistencia debe responder en un tiempo ≤ 1,0 s en la interfaz local.
 
 ```gherkin
 # language: es
@@ -183,7 +189,7 @@ Característica: HU-03 - Cobro del Servicio de Café por Grupos de Rotación
 
 * **Como** Secretaria de la Asociación,
 * **Quiero** registrar el cobro de la mensualidad ordinaria y recibir abonos parciales,
-* **Para** mantener actualizados los saldos individuales con $0.00$ margen de error financiero.
+* **Para** mantener actualizados los saldos individuales con cero margen de error financiero.
 
 #### **Criterios de Aceptación (Medidas Numéricas Verificables):**
 1. **Monto Fijo de Cuota:** La cuota fija mensual asignada a partir del período `2026-10` es de **$25.00** (Escenario E1, ADR-002).
@@ -228,7 +234,7 @@ Característica: HU-04 - Registro de Cuotas Mensuales y Abonos Parciales
 * **Para** consolidar los ingresos por asistencia, café y cuotas, generar el resumen impreso y bloquear la modificación de transacciones del mes en menos de 2 segundos.
 
 #### **Criterios de Aceptación (Medidas Numéricas Verificables):**
-1. **Tiempo de Cierre:** El proceso de consolidación y cierre total de la sesión debe ejecutarse en $\le 2.0	ext{ s}$ (Escenario E1).
+1. **Tiempo de Cierre:** El proceso de consolidación y cierre total de la sesión debe ejecutarse en ≤ 2,0 s (Escenario E1).
 2. **Inmutabilidad y Cierre Bloqueante:** Una vez cerrada la reunión (`estado = 'CERRADA'`), el sistema rechaza cualquier intento de modificar, agregar o eliminar cobros/asistencias de dicho período (ADR-002).
 3. **Consistencia Financiera:** El total consolidado en caja chica debe ser exactamente igual a la suma de `Fondo_Inicial + Cobros_Efectivo - Egresos_Caja` con 0 inconsistencias.
 
@@ -266,7 +272,7 @@ Característica: HU-05 - Cierre Bloqueante y Arqueo de Caja Chica
 * **Para** verificar la transparencia de las aportaciones y contar con un respaldo físico con logo, firma y sello.
 
 #### **Criterios de Aceptación (Medidas Numéricas Verificables):**
-1. **Tiempo de Búsqueda:** La consulta por cédula entre los 69 socios responde en $\le 1.0	ext{ s}$ (Escenario E5).
+1. **Tiempo de Búsqueda:** La consulta por cédula entre los 69 socios responde en ≤ 1,0 s (Escenario E5).
 2. **Formato de Comprobante:** El comprobante generado incluye el desglose de cuotas, café, multas, firma de la secretaria y sello de la asociación (Driver D6).
 3. **Disponibilidad Offline:** La búsqueda y generación opera al 100 % sin conexión a internet (Escenario E4).
 
@@ -299,7 +305,7 @@ Característica: HU-06 - Consulta de Ficha e Impresión de Comprobantes
 * **Para** prevenir la pérdida de información ante fallos eléctricos o de disco y garantizar un sistema auditable.
 
 #### **Criterios de Aceptación (Medidas Numéricas Verificables):**
-1. **Velocidad de Respaldo:** La copia del archivo `.db` a la unidad USB se completa en un tiempo $\le 5.0	ext{ s}$ (Escenario E6).
+1. **Velocidad de Respaldo:** La copia del archivo `.db` a la unidad USB se completa en un tiempo ≤ 5,0 s (Escenario E6).
 2. **Verificación de Integridad:** La rutina de diagnóstico ejecuta 9 chequeos de integridad en SQLite (`PRAGMA integrity_check`) devolviendo 0 errores o corrupción.
 
 ```gherkin
@@ -334,7 +340,7 @@ Para la ejecución y verificación de estas especificaciones ejecutables en la c
    ```
 3. **Ejecución con Python / Pytest-BDD:**
    ```bash
-   pytest tests/test_bdd.py --gherkin-terminal-reporter
+   pytest tests/test_bdd.py -v
    ```
 4. **Criterio de Éxito para Integración Continua:**
    * **100 % de escenarios aprobados** (`passed`).

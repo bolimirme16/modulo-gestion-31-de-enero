@@ -1,0 +1,4 @@
+﻿COMMAND: spectral lint api/openapi.yaml
+archivo: api/openapi.yaml
+
+No results with a severity of 'error' found!

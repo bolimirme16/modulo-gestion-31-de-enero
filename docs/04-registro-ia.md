@@ -1,6 +1,3 @@
-Aquí tienes el archivo `04-registro-ia.md` actualizado con el registro de la Sesión 4, integrando ambas secciones de manera estructurada y profesional:
-
-```markdown
 # 04 · Registro del uso de inteligencia artificial
 
 **Proyecto:** Sistema de Gestión Automatizada y Auditoría — Asociación “31 de Enero Narciza de Jesús”
@@ -71,13 +68,41 @@ Aquí tienes el archivo `04-registro-ia.md` actualizado con el registro de la Se
 
 ---
 
+### Actividad 3 · Borrador del contrato OpenAPI y de los escenarios Gherkin (Sesión 5)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash; octubre de 2026) |
+| **Prompt resumido** | “A partir de las 7 historias de usuario y sus criterios de aceptación de `docs/07-historias-y-criterios.md`, redacta un borrador de contrato OpenAPI 3.0.3 con al menos 4 operaciones para el sistema de la asociación. No incluyas la cédula en rutas ni en respuestas: identifica los recursos con un identificador interno. Propón el código HTTP de cada caso de error (404, 409, 403, 422).” |
+| **Salida** | Borrador de `api/openapi.yaml` con 12 operaciones, esquemas y respuestas de error. |
+| **Cómo se verificó** | (1) `spectral lint api/openapi.yaml` con el ruleset `spectral:oas` → **0 errores y 0 advertencias** (`docs/evidencias/02-spectral-lint.txt`); (2) contraste operación por operación con la matriz de trazabilidad de `docs/07-historias-y-criterios.md`; (3) generación de documentación, *mock* y *stubs* directamente desde el contrato. |
+| **Aceptado** | Estructura general del contrato, las 12 operaciones y los códigos de error. |
+| **Modificado** | El identificador del recurso pasó de `cedula` a `socioId` (UUID interno) en todas las rutas y esquemas; la identificación se conservó solo como campo `writeOnly` en el alta de socios. |
+| **Rechazado** | El borrador (heredado del documento de planificación) exponía la cédula en `GET /socios/{cedula}` y en la respuesta del padrón: se **rechazó** por incumplir la minimización de datos (R1 / LOPDP). |
+
+---
+
+### Actividad 4 · Borrador de la lógica de negocio y de las pruebas (Sesión 6)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash) |
+| **Prompt resumido** | “Implementa la capa de reglas financieras (multa $5,00; café $1,50/$3,00; cuota $25,00; cierre bloqueante) sobre SQLite, y escribe pruebas unitarias y escenarios pytest-bdd derivados de los criterios de aceptación. No uses datos personales reales en las pruebas.” |
+| **Salida** | `src/reglas.py`, `src/app.py`, `tests/` (unitarias, integración HTTP y BDD) y `tests/features/`. |
+| **Cómo se verificó** | (1) `pytest` → **34 pruebas en verde** (`docs/evidencias/07-pytest.txt`); (2) `ruff check src tests` → *All checks passed!* (`docs/evidencias/06-ruff.txt`); (3) `tests/test_api.py` comprueba que el padrón **no** devuelve la cédula. |
+| **Aceptado** | Estructura de la capa de reglas, el servicio Flask y los escenarios BDD. |
+| **Modificado** | La primera corrida de `pytest` detectó un desajuste de claves (`grupo_turno` frente a `grupoTurno`) que hacía fallar el cobro de café; se corrigió en `src/reglas.py`. |
+| **Rechazado** | Se descartó resolver las pruebas BDD con Cucumber.js (implica un segundo *runtime* de Node para probar código Python) y se mantuvo pytest-bdd, ya usado en el monolito. |
+
+---
+
 ## Declaración final del equipo
 
 El análisis del contexto, los stakeholders, las restricciones, los drivers, los escenarios, la priorización, los pesos, la decisión de estilo y la cadena CASE son **de autoría del equipo**. La IA se usó **solo** para:
+
 1. Redactar el borrador del código Mermaid de los diagramas C4 (**Google Gemini**).
 2. Revisar el contenido del borrador y ayudar a encontrar errores y observaciones a corregir —incluido el contraste crítico de la decisión de estilo— (**Claude**).
 3. Proponer alternativas de herramientas y detectar tareas omitidas en el mapa de toolchain (**Google Gemini / Claude**).
+4. Redactar borradores del contrato OpenAPI, de los escenarios Gherkin, de la lógica de negocio y de las pruebas, siempre bajo verificación con Spectral, Ruff y pytest (**asistente de IA: OpenCode, DeepSeek V4.1 Flash**).
 
 Toda salida fue **verificada** contra el análisis propio y la documentación del repositorio; lo no verificable se rechazó. El equipo asume la responsabilidad integral del contenido del dossier y los artefactos del proyecto.
-
-```

@@ -1,0 +1,51 @@
+# Evidencia 05 · Servidor mock con Prism (tarea T5)
+
+**Fecha:** 25/10/2026 · **Herramienta:** Prism 5.16.0 (Stoplight)
+
+**Comando ejecutado (desde la raíz del repositorio):**
+
+```bash
+prism mock api/openapi.yaml --port 4010
+```
+
+## 1. Arranque: rutas resueltas desde el contrato
+
+Prism levanta un servidor simulado a partir de `api/openapi.yaml`, sin escribir
+código. Resolvió las 12 operaciones del contrato:
+
+```
+[CLI] i  info      GET        http://127.0.0.1:4010/socios
+[CLI] i  info      POST       http://127.0.0.1:4010/socios
+[CLI] i  info      GET        http://127.0.0.1:4010/socios/{socioId}
+[CLI] i  info      GET        http://127.0.0.1:4010/socios/{socioId}/estado-cuenta
+[CLI] i  info      GET        http://127.0.0.1:4010/socios/{socioId}/comprobante
+[CLI] i  info      POST       http://127.0.0.1:4010/reuniones/{reunionId}/asistencia
+[CLI] i  info      POST       http://127.0.0.1:4010/reuniones/{reunionId}/cafe
+[CLI] i  info      POST       http://127.0.0.1:4010/reuniones/{reunionId}/cuotas
+[CLI] i  info      POST       http://127.0.0.1:4010/reuniones/{reunionId}/cierre
+[CLI] i  info      GET        http://127.0.0.1:4010/reuniones/{reunionId}/caja
+[CLI] i  info      GET        http://127.0.0.1:4010/sistema/integridad
+[CLI] i  info      POST       http://127.0.0.1:4010/sistema/respaldo
+[CLI] start     Prism is listening on http://127.0.0.1:4010
+```
+
+## 2. Consultas de prueba (respuestas simuladas desde los ejemplos del contrato)
+
+```
+GET /socios -> 200
+[{"socioId":"6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90","nombres":"Juan Pérez","grupoCafe":3,"estado":"ACTIVO"}]
+
+POST /reuniones/{id}/cafe -> 201
+{"socioId":"6f1c2b8e-0a3d-4c7e-9b2a-1d5e8f3a7c90","tarifa":1.5,"grupoTurno":4}
+
+GET /sistema/integridad -> 200
+{"resultado":"ok","chequeosSuperados":9,"errores":0,"chequeos":["integridad_fisica","claves_foraneas","indices","duplicados_cedula"]}
+```
+
+## 3. Lectura
+
+El mock responde con los **ejemplos** del contrato, no con lógica de negocio real
+(Prism no evalúa reglas ni credenciales). Sirve para que la interfaz y las pruebas
+se integren contra el contrato **antes** de implementar el backend. La
+implementación real del esqueleto ejecutable está en `src/` y se verifica con
+`tests/`.

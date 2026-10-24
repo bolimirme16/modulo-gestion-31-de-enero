@@ -1,0 +1,81 @@
+﻿COMMAND: openapi-generator-cli generate -i api/openapi.yaml -g python-flask -o src/generated/openapi-flask
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: python-flask (server)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'python-flask' is considered stable.
+[main] INFO  o.o.c.l.AbstractPythonCodegen - Environment variable PYTHON_POST_PROCESS_FILE not defined so the Python code may not be properly formatted. To define it, try 'export PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i"' (Linux/Mac)
+[main] INFO  o.o.c.l.AbstractPythonCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socioId}' is not consistent with Python variable names. It will be replaced by '/socios/{socio_id}'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Parameter name 'socioId' is not consistent with Python variable names. It will be replaced by 'socio_id'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socioId}/estado-cuenta' is not consistent with Python variable names. It will be replaced by '/socios/{socio_id}/estado-cuenta'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socioId}/comprobante' is not consistent with Python variable names. It will be replaced by '/socios/{socio_id}/comprobante'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunionId}/asistencia' is not consistent with Python variable names. It will be replaced by '/reuniones/{reunion_id}/asistencia'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Parameter name 'reunionId' is not consistent with Python variable names. It will be replaced by 'reunion_id'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunionId}/cafe' is not consistent with Python variable names. It will be replaced by '/reuniones/{reunion_id}/cafe'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunionId}/cuotas' is not consistent with Python variable names. It will be replaced by '/reuniones/{reunion_id}/cuotas'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunionId}/cierre' is not consistent with Python variable names. It will be replaced by '/reuniones/{reunion_id}/cierre'
+[main] WARN  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunionId}/caja' is not consistent with Python variable names. It will be replaced by '/reuniones/{reunion_id}/caja'
+[main] WARN  o.o.codegen.utils.ModelUtils - Failed to get the schema name: null
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\abono.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\asistencia.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\cargo.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\cierre.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\cobro_cafe.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\comprobante.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\corte_caja.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\cuota.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\error.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\estado_cuenta.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\integridad.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\nuevo_socio.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\registro_asistencia.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\registro_cafe.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\registro_cuota.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\respaldo.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\socio.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\caja_controller.py
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\test\test_caja_controller.py (Test files never overwrite an existing file of the same name.)
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\reuniones_controller.py
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\test\test_reuniones_controller.py (Test files never overwrite an existing file of the same name.)
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\sistema_controller.py
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\test\test_sistema_controller.py (Test files never overwrite an existing file of the same name.)
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\socios_controller.py
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\test\test_socios_controller.py (Test files never overwrite an existing file of the same name.)
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunion_id}/asistencia' is not consistent with the original OpenAPI definition. It will be replaced back by '/reuniones/{reunionId}/asistencia'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Reverting name of parameter 'reunion_id' of operation 'registrar_asistencia' back to 'reunionId'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunion_id}/cafe' is not consistent with the original OpenAPI definition. It will be replaced back by '/reuniones/{reunionId}/cafe'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunion_id}/caja' is not consistent with the original OpenAPI definition. It will be replaced back by '/reuniones/{reunionId}/caja'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunion_id}/cierre' is not consistent with the original OpenAPI definition. It will be replaced back by '/reuniones/{reunionId}/cierre'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/reuniones/{reunion_id}/cuotas' is not consistent with the original OpenAPI definition. It will be replaced back by '/reuniones/{reunionId}/cuotas'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socio_id}' is not consistent with the original OpenAPI definition. It will be replaced back by '/socios/{socioId}'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Reverting name of parameter 'socio_id' of operation 'obtener_socio' back to 'socioId'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socio_id}/comprobante' is not consistent with the original OpenAPI definition. It will be replaced back by '/socios/{socioId}/comprobante'
+[main] INFO  o.o.c.l.AbstractPythonConnexionServerCodegen - Path '/socios/{socio_id}/estado-cuenta' is not consistent with the original OpenAPI definition. It will be replaced back by '/socios/{socioId}/estado-cuenta'
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\test-requirements.txt
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\requirements.txt
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\__main__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\util.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\typing_utils.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\controllers\security_controller.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\models\base_model.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\openapi\openapi.yaml
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.gitignore
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\Dockerfile
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.dockerignore
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\setup.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\tox.ini
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\git_push.sh
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.travis.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\encoder.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\test\__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\openapi_server\__init__.py
+[main] INFO  o.o.codegen.TemplateManager - Skipped D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.openapi-generator-ignore (Skipped by supportingFiles options supplied by user.)
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.openapi-generator\VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file D:\Maestria\AUTOMATIZACION\modulo-gestion-31-de-enero\src\generated\openapi-flask\.openapi-generator\FILES
+############################################################################################
+# Thanks for using OpenAPI Generator.                                                      #
+# We appreciate your support! Please consider donating to help us maintain this project.   #
+# https://opencollective.com/openapi_generator/donate                                      #
+############################################################################################
