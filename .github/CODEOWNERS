@@ -1,0 +1,26 @@
+# Propietarios de código (CODEOWNERS)
+#
+# GitHub solicita automáticamente la revisión de estos usuarios cuando un PR
+# modifica las rutas indicadas. Es el mecanismo que hace exigible la revisión
+# cruzada descrita en CONTRIBUTING.md.
+#
+# Formato:  <ruta>  <usuario u organización>
+
+# Propietario por defecto (mantenedor)
+*                                   @bolimirme16
+
+# Gobernanza y documentación → Valery
+/CONTRIBUTING.md                    @Valerylu97
+/SECURITY.md                        @Valerylu97
+/CHANGELOG.md                       @Valerylu97
+/docs/                              @Valerylu97
+
+# Producto: contrato, código y pruebas → José Miguel
+/api/                               @JoseMiguelGuerreroTapia
+/src/                               @JoseMiguelGuerreroTapia
+
+# Repositorio e integración continua → Bolívar
+/.github/                           @bolimirme16
+/.gitattributes                     @bolimirme16
+/.editorconfig                      @bolimirme16
+/.gitignore                         @bolimirme16
