@@ -3,6 +3,7 @@
 **Módulo 8 · Automatización de proceso de software (UPEC)**
 **Hito H1 · v0.1.0 · 18/10/2026** — Dossier de arquitectura (SEM01)
 **Hito H2 · v0.2.0 · 25/10/2026** — Cadena CASE y especificación (SEM02)
+**Hito H3 · v0.3.0 · 01/11/2026** — Repositorio gobernado (SEM03)
 
 Repositorio de la aplicación de escritorio (100 % offline) para la administración de socios, reuniones, caja y auditoría de la asociación, junto con su documentación. El **dossier de arquitectura** se elabora conforme a ISO/IEC/IEEE 42010:2022 e ISO/IEC 25010:2023, y la **cadena CASE** conforme a ISO/IEC/IEEE 12207:2017 (procesos) e ISO/IEC 14102:2008 (evaluación y selección de herramientas).
 
@@ -31,12 +32,15 @@ Repositorio de la aplicación de escritorio (100 % offline) para la administraci
 │  ├─ 00-Dossier-de-arquitectura.md
 │  ├─ 01-contexto-y-drivers.md
 │  ├─ 02-vistas-c4/                 # C4 nivel 1 y 2 (como código) + revisión cruzada
-│  ├─ 03-adr/                       # ADR-001, ADR-002, ADR-003 y matriz de decisión
+│  ├─ 03-adr/                       # ADR-001 a ADR-004 y matriz de decisión
 │  ├─ 04-registro-ia.md             # Registro de uso de IA
 │  ├─ 06-mapa-toolchain.md          # ENTREGABLE SEM02 · Mapa de toolchain
 │  ├─ 07-historias-y-criterios.md   # ENTREGABLE SEM02 · HU + criterios (Gherkin)
 │  ├─ 08-matriz-evaluacion-seleccion.md  # ENTREGABLE SEM02 · Matriz de selección
+│  ├─ 08-matriz-git-vs-svn.md       # ENTREGABLE SEM03 · Matriz Git vs SVN
 │  ├─ 09-informe-cadena-case.md     # ENTREGABLE SEM02 · Informe de la cadena CASE
+│  ├─ 10-gobierno-del-repositorio.md  # ENTREGABLE SEM03 · Gobierno y trazabilidad
+│  ├─ 11-practica-de-conflicto.md   # ENTREGABLE SEM03 · Conflicto deliberado resuelto
 │  ├─ api/                          # Documentación HTML generada desde el contrato
 │  ├─ evidencias/                   # Transcripciones de ejecución (01–07)
 │  └─ proyecto/                     # Documentación técnica del sistema
@@ -68,6 +72,21 @@ Repositorio de la aplicación de escritorio (100 % offline) para la administraci
 | Informe de la cadena CASE | [`docs/09-informe-cadena-case.md`](docs/09-informe-cadena-case.md) |
 | Evidencias de ejecución | [`docs/evidencias/`](docs/evidencias/) |
 | Registro de uso de IA | [`docs/04-registro-ia.md`](docs/04-registro-ia.md) |
+
+## Entregable SEM03 — Repositorio gobernado
+
+| Pieza | Ruta |
+|-------|------|
+| Reglas de contribución (roles, ramas, commits, revisión) | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Propietarios por área | [`.github/CODEOWNERS`](.github/CODEOWNERS) |
+| Plantilla de *pull request* | [`.github/pull_request_template.md`](.github/pull_request_template.md) |
+| Plantillas de issue (tarea y defecto) | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) |
+| Modelo de gobierno y trazabilidad regla → evidencia | [`docs/10-gobierno-del-repositorio.md`](docs/10-gobierno-del-repositorio.md) |
+| Conflicto deliberado y su resolución | [`docs/11-practica-de-conflicto.md`](docs/11-practica-de-conflicto.md) |
+| Matriz comparativa Git vs SVN | [`docs/08-matriz-git-vs-svn.md`](docs/08-matriz-git-vs-svn.md) |
+| ADR-004 — Selección de Git como SCM | [`docs/03-adr/ADR-004-seleccion-git-como-scm.md`](docs/03-adr/ADR-004-seleccion-git-como-scm.md) |
+| Historial de versiones | [`CHANGELOG.md`](CHANGELOG.md) |
+| Política de seguridad | [`SECURITY.md`](SECURITY.md) |
 
 ## Trazabilidad S → D → E → ADR → vista
 
