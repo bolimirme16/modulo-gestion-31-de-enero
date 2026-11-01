@@ -96,6 +96,50 @@
 
 ---
 
+## 3. Actividad autónoma · Semana 3 (Repositorio gobernado, matriz Git vs SVN y ADR-004)
+
+### Actividad 1 · Reglas de contribución, plantillas y protección de `main` (Sesión 7)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash) |
+| **Prompt resumido** | “Redacta las reglas de contribución del repositorio: roles, modelo de ramas, convención de commits, ciclo de revisión y *definition of done*. Añade `CODEOWNERS` y plantillas de *pull request* e issue cohe­rentes con el proyecto. No inventes integrantes ni áreas que no existan en el repositorio.” |
+| **Salida** | `CONTRIBUTING.md`, `.github/CODEOWNERS`, `.github/pull_request_template.md`, `.github/ISSUE_TEMPLATE/tarea.md`, `.github/ISSUE_TEMPLATE/defecto.md` y `docs/10-gobierno-del-repositorio.md` (PR #5). |
+| **Cómo se verificó** | (1) `spectral lint api/openapi.yaml`, `ruff check src tests` y `pytest` en verde en la CI del PR; (2) revisión cruzada aprobada por José Miguel Guerrero; (3) contraste de cada regla con la configuración real de protección de `main` en GitHub. |
+| **Aceptado** | Estructura de `CONTRIBUTING.md`, las plantillas y la tabla regla → evidencia de `docs/10-gobierno-del-repositorio.md`. |
+| **Modificado** | La primera versión del cuerpo del PR incluía `Closes #2`, `Closes #3` y `Closes #4`, que habrían cerrado las historias de usuario sin implementarlas. Se eliminaron y se sustituyeron por una nota de alcance antes de fusionar. |
+| **Rechazado** | Se descartó exigir dos aprobaciones por PR: con cuatro integrantes y trabajo asíncrono, bloquea la fusión sin aportar control adicional sobre un equipo de este tamaño. |
+
+---
+
+### Actividad 2 · Conflicto deliberado y su reporte (Sesiones 7 y 8)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash) |
+| **Prompt resumido** | “Diseña un conflicto de fusión real y reproducible entre dos ramas que modifiquen la misma línea, resuélvelo conservando las condiciones de ambas propuestas y documenta causa, marcadores, resolución y prevención.” |
+| **Salida** | `docs/11-practica-de-conflicto.md`, las ramas `practica/conflicto-a` y `practica/conflicto-b`, los commits `c63833d` y `4196d2b`, el commit de fusión `e64fc60` y el PR #7. |
+| **Cómo se verificó** | (1) `git merge` devolvió `CONFLICT (content): Merge conflict in docs/11-practica-de-conflicto.md`; (2) `git log --graph` muestra la bifurcación y el commit de fusión; (3) el archivo final no conserva marcadores `<<<<<<<`; (4) la CI del PR #7 pasó en verde. |
+| **Aceptado** | El procedimiento y la tabla comparativa de las dos redacciones. |
+| **Modificado** | La resolución propuesta inicialmente elegía la redacción de una sola rama; se reemplazó por una redacción que conserva las tres condiciones de ambas (frecuencia diaria, disparador de revisión y excepción por emergencia). |
+| **Rechazado** | Se descartó provocar el conflicto sobre `src/reglas.py`: habría puesto en riesgo código con pruebas asociadas y el valor didáctico es el mismo sobre un documento. |
+
+---
+
+### Actividad 3 · Matriz Git vs SVN y ADR-004 (Sesión 8)
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash) |
+| **Prompt resumido** | “Compara Git y Subversion en las siete dimensiones pedidas (modelo, historial, ramas, trabajo sin conexión, permisos, rendimiento y ecosistema) con apoyo en Chacon y Straub (2014) y Collins-Sussman et al. (2011), y redacta el ADR-004 con contexto, decisión, alternativa SVN, consecuencias y el caso en que SVN aplicaría. No atribuyas a ninguna fuente afirmaciones que no estén en la lectura.” |
+| **Salida** | `docs/08-matriz-git-vs-svn.md` y `docs/03-adr/ADR-004-seleccion-git-como-scm.md`. |
+| **Cómo se verificó** | (1) Contraste de cada fila de la matriz con los capítulos 1 y 2 de *Version Control with Subversion* y con *Pro Git*; (2) verificación de que las dos referencias están citadas en el texto y no solo listadas; (3) revisión de que el ADR incluya los cinco elementos exigidos y el caso de aplicación de SVN. |
+| **Aceptado** | La estructura de siete dimensiones, la distinción entre permisos por ruta (SVN) y por rama (Git), y la sección «Cuándo aplicaría Subversion». |
+| **Modificado** | La primera propuesta presentaba a Git como superior en todas las dimensiones; se corrigió para reconocer que SVN tiene una ventaja real (permisos por ruta) y explicar por qué no aplica a este contexto. |
+| **Rechazado** | Se descartaron afirmaciones de rendimiento sin respaldo (comparaciones de velocidad en milisegundos): las fuentes no las sostienen y el proyecto no las midió. |
+
+---
+
 ## Declaración final del equipo
 
 El análisis del contexto, los stakeholders, las restricciones, los drivers, los escenarios, la priorización, los pesos, la decisión de estilo y la cadena CASE son **de autoría del equipo**. La IA se usó **solo** para:
@@ -104,5 +148,8 @@ El análisis del contexto, los stakeholders, las restricciones, los drivers, los
 2. Revisar el contenido del borrador y ayudar a encontrar errores y observaciones a corregir —incluido el contraste crítico de la decisión de estilo— (**Claude**).
 3. Proponer alternativas de herramientas y detectar tareas omitidas en el mapa de toolchain (**Google Gemini / Claude**).
 4. Redactar borradores del contrato OpenAPI, de los escenarios Gherkin, de la lógica de negocio y de las pruebas, siempre bajo verificación con Spectral, Ruff y pytest (**asistente de IA: OpenCode, DeepSeek V4.1 Flash**).
+5. Redactar el borrador de las reglas de contribución, plantillas y `CODEOWNERS`, verificados contra la configuración real de protección de `main` (**OpenCode, DeepSeek V4.1 Flash**).
+6. Diseñar el ejercicio de conflicto deliberado y su reporte, verificado con `git log --graph` y la CI del PR #7 (**OpenCode, DeepSeek V4.1 Flash**).
+7. Redactar el borrador de la matriz Git vs SVN y del ADR-004, contrastado con las dos fuentes de la actividad (**OpenCode, DeepSeek V4.1 Flash**).
 
 Toda salida fue **verificada** contra el análisis propio y la documentación del repositorio; lo no verificable se rechazó. El equipo asume la responsabilidad integral del contenido del dossier y los artefactos del proyecto.
