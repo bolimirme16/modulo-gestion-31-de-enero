@@ -1,18 +1,42 @@
-﻿# Registro de participación individual - SEM03
+﻿# Registro de participación individual — SEM03
 
-## Objetivo
-Documentar la participación individual en las actividades
-de ingeniería de software correspondientes al hito SEM03.
+- **Integrante:** José Miguel Guerrero Tapia
+- **Hito:** H3 · v0.3.0 · Repositorio gobernado
+- **Período:** 25/10/2026 – 01/11/2026
 
-## Actividades
-- Revisión de documentación técnica.
-- Verificación de cambios propuestos mediante Pull Requests.
-- Seguimiento de las verificaciones de integración continua.
-- Registro de evidencias para el cierre del hito.
+## 1. Pull requests abiertos
 
-## Trazabilidad
-Los cambios de este documento se gestionan mediante una rama
-independiente y un Pull Request dirigido a main.
+| PR | Rama | Aporte | Estado |
+|---|---|---|---|
+| **#6** | `docs/changelog` | `CHANGELOG.md` con historial de versiones (Keep a Changelog + SemVer), `LICENSE` (MIT) y `SECURITY.md` | fusionado en `77ba4a1` (head `813cdd4`) |
+| **#16** | `docs/aporte-jose` | Este registro de participación individual | en revisión |
 
-## Estado
-Documento presentado como aporte de documentación del hito SEM03.
+## 2. Revisiones cruzadas realizadas
+
+| PR revisado | Autor | Fecha | Resultado |
+|---|---|---|---|
+| **#5** `chore/gobernanza` | Bolívar Valenzuela | 31/10/2026 | Aprobado |
+| **#15** `fix/dependencias-flask` | Bolívar Valenzuela | 01/11/2026 | Aprobado |
+| **#13** `docs/matriz-git-svn` | Bolívar Valenzuela | 01/11/2026 | Aprobado |
+| **#8** `chore/higiene` | Bolívar Valenzuela | 01/11/2026 | Aprobado |
+
+Ninguna de estas revisiones es del propio autor del PR: es la regla de revisión cruzada que exige
+la protección de `main`.
+
+## 3. Verificación de la integración continua
+
+Cada PR aprobado se comprobó contra la verificación obligatoria `Spectral + Ruff + pytest` antes
+de fusionar. En el PR #15 la verificación incluyó además la consulta a la API de OSV sobre las
+dependencias fijadas, que encontró cuatro avisos sobre Flask 3.1.0 y cero sobre 3.1.3.
+
+## 4. Trazabilidad
+
+- Los cambios de este documento entran por una **rama independiente** (`docs/aporte-jose`) y un
+  *pull request* dirigido a `main`, nunca por push directo.
+- Cada PR está vinculado a su issue mediante `Closes #n`.
+- La fusión se hace por *squash*, de modo que cada PR deja **un** commit en `main` con su número.
+
+## 5. Estado
+
+Documento presentado como aporte de documentación del hito SEM03, dentro del flujo
+issue → rama → PR → revisión cruzada → fusión descrito en `CONTRIBUTING.md`.
