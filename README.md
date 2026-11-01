@@ -1,5 +1,9 @@
 # Sistema de Gestión Automatizada y Auditoría — Asociación “31 de Enero Narciza de Jesús”
 
+[![Integración continua](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml/badge.svg)](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml)
+[![Última versión](https://img.shields.io/github/v/tag/bolimirme16/modulo-gestion-31-de-enero?label=versi%C3%B3n)](https://github.com/bolimirme16/modulo-gestion-31-de-enero/releases)
+[![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+
 **Módulo 8 · Automatización de proceso de software (UPEC)**
 **Hito H1 · v0.1.0 · 18/10/2026** — Dossier de arquitectura (SEM01)
 **Hito H2 · v0.2.0 · 25/10/2026** — Cadena CASE y especificación (SEM02)
@@ -122,6 +126,44 @@ pip install -r requirements-dev.txt
 ruff check src tests
 pytest
 ```
+
+## Gobierno del repositorio
+
+El repositorio se rige por reglas explícitas, no por costumbre. Todo cambio entra por una rama
+temática y un *pull request* revisado por otra persona; `main` está protegida y exige la CI en
+verde para fusionar.
+
+| Documento | Propósito |
+|-----------|-----------|
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Roles, modelo de ramas, convención de commits, revisión y *definition of done* |
+| [`CHANGELOG.md`](CHANGELOG.md) | Historial de versiones (Keep a Changelog) |
+| [`SECURITY.md`](SECURITY.md) | Alcance de seguridad y canal de reporte |
+| [`LICENSE`](LICENSE) | Licencia MIT |
+| [`docs/10-gobierno-del-repositorio.md`](docs/10-gobierno-del-repositorio.md) | Modelo de gobierno y trazabilidad regla → evidencia |
+| [`.github/CODEOWNERS`](.github/CODEOWNERS) | Propietarios por área |
+
+### Flujo de trabajo
+
+```
+issue  →  rama temática  →  commits convencionales  →  pull request
+       →  revisión de otro integrante  →  CI en verde  →  squash a main  →  etiqueta
+```
+
+### Cómo verificar antes de subir
+
+```bash
+spectral lint api/openapi.yaml
+ruff check src tests
+pytest
+```
+
+### Versiones
+
+| Etiqueta | Hito | Contenido |
+|----------|------|-----------|
+| `v0.1.0` | SEM01 | Dossier de arquitectura |
+| `v0.2.0` | SEM02 | Cadena CASE y especificación |
+| `v0.3.0` | SEM03 | Repositorio gobernado |
 
 ## Equipo
 
