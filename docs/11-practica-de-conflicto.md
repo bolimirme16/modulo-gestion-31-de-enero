@@ -14,4 +14,4 @@ rama, commit y pull request.
 
 ## Regla acordada por el equipo
 
-Integrar a `main` al menos una vez al día.
+Integrar a `main` al menos una vez al día, salvo cambios de emergencia.
