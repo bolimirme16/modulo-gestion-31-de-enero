@@ -26,14 +26,25 @@ del módulo, mientras el producto está en desarrollo.
 - `LICENSE` (MIT), `SECURITY.md` y este `CHANGELOG.md`.
 - `.gitattributes` y `.editorconfig` para normalizar finales de línea y estilo de edición.
 - `docs/10-gobierno-del-repositorio.md`: modelo de gobierno y su trazabilidad.
+- `docs/11-practica-de-conflicto.md`: conflicto deliberado entre `practica/conflicto-a` y
+  `practica/conflicto-b`, con causa, marcadores, resolución (`e64fc60`) y prevención.
+- `docs/08-matriz-git-vs-svn.md`: comparación de Git y SVN en siete dimensiones.
+- `docs/03-adr/ADR-004-seleccion-git-como-scm.md`: decisión de adoptar Git y caso de aplicación
+  de Subversion.
 - Sección «Gobierno del repositorio» e insignias de estado en el `README.md`.
 
 ### Cambiado
 - La rama `main` queda protegida: sin push directo, con revisión obligatoria y CI en verde.
-- Se elimina la rama `valery/toolchain`, ya fusionada en la versión 0.2.0.
+- Se documenta el cierre de la rama `valery/toolchain`, fusionada en la versión 0.2.0: su
+  contenido ya está en `main` y la rama no se reutiliza.
+- `docs/04-registro-ia.md` incorpora el registro de la actividad autónoma de la semana 3.
 
 ### Seguridad
 - Se refuerza la exclusión de bases de datos locales con datos personales en `.gitignore`.
+- Se actualiza **Flask de 3.1.0 a 3.1.3** tras la revisión de dependencias con la API de OSV:
+  cuatro avisos publicados sobre la versión anterior, cero sobre la nueva.
+- Se registra la revisión de dependencias en `SECURITY.md` y su evidencia en
+  `docs/evidencias/08-revision-dependencias.txt`.
 
 ---
 
