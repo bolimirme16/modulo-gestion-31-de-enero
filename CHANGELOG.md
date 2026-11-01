@@ -34,6 +34,10 @@ del módulo, mientras el producto está en desarrollo.
 
 ### Seguridad
 - Se refuerza la exclusión de bases de datos locales con datos personales en `.gitignore`.
+- Se actualiza **Flask de 3.1.0 a 3.1.3** tras la revisión de dependencias con la API de OSV:
+  cuatro avisos publicados sobre la versión anterior, cero sobre la nueva.
+- Se registra la revisión de dependencias en `SECURITY.md` y su evidencia en
+  `docs/evidencias/08-revision-dependencias.txt`.
 
 ---
 
