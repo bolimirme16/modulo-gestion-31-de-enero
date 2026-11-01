@@ -46,6 +46,22 @@ pero administra datos personales de socios (nombres, cédulas, cuotas y estados 
 
 ## Dependencias
 
-Las dependencias se fijan en `requirements.txt` y `requirements-dev.txt`. Antes de cada hito se
-revisa que no haya versiones con vulnerabilidades conocidas en las librerías utilizadas
-(Flask, pytest, openapi-generator y Spectral CLI).
+Las dependencias se fijan en `requirements.txt` y `requirements-dev.txt`.
+
+### Registro de revisión
+
+| Fecha | Alcance | Método | Resultado |
+|---|---|---|---|
+| 01/11/2026 | Flask, waitress, pywebview, pytest, pytest-bdd, ruff | Consulta a la API de OSV (`https://api.osv.dev/v1/query`) por paquete y versión exacta | **4 avisos** en Flask 3.1.0 (GHSA-4grg-w6v8-c28g, PYSEC-2026-1377, GHSA-68rp-wp8r-4726, PYSEC-2026-2151) |
+| 01/11/2026 | Flask 3.1.3 tras la corrección | Misma consulta + `ruff` + `pytest` | **0 avisos**; 34 pruebas en verde |
+
+La evidencia completa de ambas consultas está en
+[`docs/evidencias/08-revision-dependencias.txt`](docs/evidencias/08-revision-dependencias.txt).
+
+### Política
+
+- Toda dependencia se fija a una **versión exacta** (`==`); no se usan rangos abiertos.
+- Antes de cada *release* se repite la consulta a OSV sobre las versiones fijadas.
+- Si un aviso afecta una versión fijada, se actualiza a la versión corregida y se vuelven a
+  ejecutar `ruff` y `pytest` antes de fusionar el cambio.
+
