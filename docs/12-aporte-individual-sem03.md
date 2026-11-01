@@ -33,7 +33,9 @@ dependencias fijadas, que encontró cuatro avisos sobre Flask 3.1.0 y cero sobre
 
 - Los cambios de este documento entran por una **rama independiente** (`docs/aporte-jose`) y un
   *pull request* dirigido a `main`, nunca por push directo.
-- Cada PR está vinculado a su issue mediante `Closes #n`.
+- Los PR **#7** y **#16** están vinculados a su issue mediante `Closes #n`. Los PR **#5** y **#6**
+  se fusionaron antes de que existieran sus issues, así que el vínculo se registró a posteriori
+  (el issue #9 se cerró con la referencia al `42dcaff`).
 - La fusión se hace por *squash*, de modo que cada PR deja **un** commit en `main` con su número.
 
 ## 5. Estado
