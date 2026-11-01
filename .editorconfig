@@ -1,0 +1,22 @@
+# Configuración de estilo común para todos los editores (VS Code, PyCharm, etc.).
+# Evita ruido en los diffs por tabulaciones, espacios sobrantes o codificaciones.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{yml,yaml,json,md,feature}]
+indent_size = 2
+
+[*.md]
+# En Markdown los dos espacios finales son un salto de línea intencional
+trim_trailing_whitespace = false
+
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
