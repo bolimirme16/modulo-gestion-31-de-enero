@@ -1,0 +1,40 @@
+# Normalización de finales de línea y tratamiento de archivos binarios.
+# Motivo: el equipo trabaja en Windows, pero la CI corre en Linux. Sin esta
+# regla, un mismo archivo aparece modificado por el solo hecho de cambiar de
+# sistema operativo (CRLF <-> LF) y los diffs se vuelven ilegibles.
+
+* text=auto eol=lf
+
+# Código y documentación: siempre LF
+*.py      text eol=lf
+*.md      text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.json    text eol=lf
+*.toml    text eol=lf
+*.ini     text eol=lf
+*.cfg     text eol=lf
+*.txt     text eol=lf
+*.feature text eol=lf
+*.spec    text eol=lf
+
+# Scripts de Windows: CRLF obligatorio
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+*.ps1     text eol=crlf
+
+# Binarios: nunca normalizar ni mostrar diff textual
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.ico     binary
+*.gif     binary
+*.pdf     binary
+*.docx    binary
+*.xlsx    binary
+*.zip     binary
+*.exe     binary
+
+# Código generado: no inflar las estadísticas del repositorio ni los diffs
+src/generated/**  linguist-generated=true
+docs/api/**       linguist-generated=true
