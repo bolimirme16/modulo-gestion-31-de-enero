@@ -60,7 +60,7 @@ sustitución descrita en la sección 2.
 
 El repositorio se entrega con la etiqueta **v0.3.1** sobre el commit `243db60`, que es
 el estado verificado de `main` en el momento de la entrega. Esta nota viaja en la rama
-`docs/cierre-sem03` y en el PR #21, pendiente de revisión; no altera el commit entregado.
+`docs/cierre-sem03` y en el PR #22, pendiente de revisión; no altera el commit entregado.
 
 ---
 
