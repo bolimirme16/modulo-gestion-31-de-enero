@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema de Gestión Automatizada y Auditoría — Asociación “31 de Enero Narciza de Jesús”
 **Módulo 8 · Automatización de proceso de software · UPEC**
-**Hito H3 · v0.3.0 · 01/11/2026** — Repositorio gobernado (SEM03)
+**Hito H3 · v0.3.0 (parche v0.3.1) · 01/11/2026** — Repositorio gobernado (SEM03)
 
 ---
 
@@ -130,13 +130,13 @@ corrigieron en el mismo hito:
 | Hallazgo | Riesgo | Corrección |
 |----------|--------|------------|
 | `app.secret_key` con valor literal en `app.py` | Cualquiera con acceso al repositorio podía firmar cookies de sesión | La clave se lee de `SECRET_KEY` o se genera con `secrets.token_urlsafe(48)` en `clave_sesion.key`, fuera del control de versiones |
-| Contraseña inicial `secretaria / 31enero2026` escrita en el código, los manuales y la pantalla de login | Credencial compartida y pública en cinco archivos | Se genera al azar en el primer arranque y se escribe una sola vez en `clave_inicial.txt`; la documentación ya no reproduce ninguna clave |
+| Contraseña inicial de la cuenta `secretaria` escrita en el código, los manuales y la pantalla de login (valor enmascarado: `31enero••••`) | Credencial compartida y pública en cinco archivos | Se genera al azar en el primer arranque y se escribe una sola vez en `clave_inicial.txt`; la documentación ya no reproduce ninguna clave |
 
 `.gitignore` excluye `clave_sesion.key`, `clave_inicial.txt`, `.env`, `*.pem` y `*.key`. La
 verificación es reproducible con:
 
 ```bash
-git grep -n -i "secret_key\|31enero2026" -- . ':!docs/10-gobierno-del-repositorio.md'
+git grep -n -i "secret_key\|31enero" -- . ':!docs/10-gobierno-del-repositorio.md'
 ```
 
 que no debe devolver coincidencias fuera de este documento.
@@ -224,7 +224,7 @@ aporte individual es visible tanto en los commits como en las revisiones.
 
 ## 9. Resultados
 
-- Siete *pull requests* fusionados con revisión cruzada (y dos más del hito anterior).
+- Siete *pull requests* fusionados con revisión cruzada en el hito, más el #1 del hito anterior (23/10) y el #20 posterior al cierre (v0.3.1).
 - `main` protegida: sin push directo y con CI obligatoria, también para el administrador.
 - Ramas de trabajo conservadas tras la fusión (`chore/*`, `docs/*`, `fix/*`, `practica/*`) y las
   dos de hitos anteriores (`valery/toolchain`, `contratos-api-bdd`): se mantienen como evidencia
