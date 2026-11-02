@@ -56,7 +56,35 @@ El equipo asume la consecuencia en la calificación de ese criterio antes que pr
 una participación que no ocurrió. Se deja a criterio del docente aceptar o no la
 sustitución descrita en la sección 2.
 
-## 5. Alcance de esta nota en el repositorio
+## 5. Declaración de cumplimiento y solicitud
+
+El entregable grupal está completo. Los seis criterios de la rúbrica tienen evidencia
+verificable en el repositorio:
+
+- **Estructura:** `README.md`, `CONTRIBUTING.md`, `.gitignore` y plantillas de issue y de PR.
+- **Historial:** commits atómicos en Conventional Commits desde v0.1.0 y los ocho PR del hito
+  vinculados a su issue con `Closes #n`.
+- **Ramas y revisión:** ramas cortas, revisión cruzada en todos los PR y conflicto deliberado
+  documentado con causa, marcadores, resolución y prevención.
+- **Versiones:** v0.1.0, v0.2.0 y v0.3.0 sobre los commits de cada hito, más el parche v0.3.1.
+- **Gobierno y seguridad:** `main` protegida, dependencias revisadas con OSV y auditoría de
+  secretos con sus dos hallazgos corregidos.
+- **Matriz y ADR:** siete dimensiones con dos referencias en APA y ADR-004 completo.
+
+La parte asignada a la tercera integrante **no quedó vacía**: la asumió el equipo con su
+autorización expresa y está entregada dentro de los mismos PR. No hay trabajo del hito sin
+hacer. La causa es una limitación de conectividad acreditada —acceso únicamente a mensajería
+durante todo el período—, no desinterés ni abandono.
+
+**Solicitud al evaluador:** que al calificar se valore el entregable terminado y la
+sustitución autorizada, y que una circunstancia de conectividad ajena al equipo no penalice a
+quienes asumieron esa carga y la declararon por escrito en lugar de simularla.
+
+El mínimo individual de dos PR y dos revisiones no se cumple para ella y no se simula. Esta
+declaración no pretende alterar el historial: pide que se pondere el contexto antes de aplicar
+la penalización, con los hechos a la vista para que la decisión sea informada.
+
+## 6. Alcance de esta nota en el repositorio
 
 El repositorio se entrega con la etiqueta **v0.3.1** sobre el commit `243db60`, que es
 el estado verificado de `main` en el momento de la entrega. Esta nota viaja en la rama
