@@ -16,6 +16,33 @@ del módulo, mientras el producto está en desarrollo.
 
 ---
 
+## [0.3.1] — 2026-11-01 — Corrección de seguridad
+
+### Seguridad
+- Se elimina la clave de sesión literal de `app.py`. Ahora se resuelve desde la variable de
+  entorno `SECRET_KEY`, desde un archivo local `clave_sesion.key` o generándola con
+  `secrets.token_urlsafe(48)` en el primer arranque.
+- Se elimina la contraseña inicial incrustada: el usuario `secretaria` se siembra con una clave
+  aleatoria que se escribe una sola vez en `clave_inicial.txt`. La clave ya no aparece en el
+  código, en los tres manuales ni en la pantalla de acceso.
+- `.gitignore` excluye `clave_sesion.key`, `clave_inicial.txt`, `.env`, `*.pem` y `*.key`.
+- El hallazgo, el método y la verificación posterior quedan en
+  `docs/evidencias/10-auditoria-de-secretos.txt`.
+
+### Corregido
+- `docs/10-gobierno-del-repositorio.md` declara siete *pull requests* en el hito (no tres), deja
+  de atribuir `chore/higiene` a una integrante que no lo escribió, deja de afirmar que no hay
+  ramas sin borrar y documenta la protección efectiva de `main`.
+- `docs/10` gana la sección 4.7 sobre gestión de secretos y la evidencia
+  `docs/evidencias/09-proteccion-de-main.txt` con la respuesta real de la API.
+
+### Eliminado
+- `src/generated/openapi-flask/git_push.sh` y `.travis.yml`: artefactos del generador que
+  describen un remoto y un servicio de CI que el proyecto no usa. Los *stubs* que sí son
+  evidencia de la cadena CASE (`openapi_server/`) se conservan.
+
+---
+
 ## [0.3.0] — 2026-11-01 — Repositorio gobernado (SEM03)
 
 ### Añadido
