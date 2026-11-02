@@ -7,7 +7,7 @@
 **Módulo 8 · Automatización de proceso de software (UPEC)**
 **Hito H1 · v0.1.0 · 18/10/2026** — Dossier de arquitectura (SEM01)
 **Hito H2 · v0.2.0 · 25/10/2026** — Cadena CASE y especificación (SEM02)
-**Hito H3 · v0.3.0 · 01/11/2026** — Repositorio gobernado (SEM03)
+**Hito H3 · v0.3.0 (parche v0.3.1) · 01/11/2026** — Repositorio gobernado (SEM03)
 
 Repositorio de la aplicación de escritorio (100 % offline) para la administración de socios, reuniones, caja y auditoría de la asociación, junto con su documentación. El **dossier de arquitectura** se elabora conforme a ISO/IEC/IEEE 42010:2022 e ISO/IEC 25010:2023, y la **cadena CASE** conforme a ISO/IEC/IEEE 12207:2017 (procesos) e ISO/IEC 14102:2008 (evaluación y selección de herramientas).
 
@@ -89,6 +89,8 @@ Repositorio de la aplicación de escritorio (100 % offline) para la administraci
 | Conflicto deliberado y su resolución | [`docs/11-practica-de-conflicto.md`](docs/11-practica-de-conflicto.md) |
 | Matriz comparativa Git vs SVN | [`docs/08-matriz-git-vs-svn.md`](docs/08-matriz-git-vs-svn.md) |
 | ADR-004 — Selección de Git como SCM | [`docs/03-adr/ADR-004-seleccion-git-como-scm.md`](docs/03-adr/ADR-004-seleccion-git-como-scm.md) |
+| Registro de participación individual | [`docs/12-aporte-individual-sem03.md`](docs/12-aporte-individual-sem03.md) |
+| Auditoría de secretos y su corrección | [`docs/evidencias/10-auditoria-de-secretos.txt`](docs/evidencias/10-auditoria-de-secretos.txt) |
 | Historial de versiones | [`CHANGELOG.md`](CHANGELOG.md) |
 | Política de seguridad | [`SECURITY.md`](SECURITY.md) |
 
