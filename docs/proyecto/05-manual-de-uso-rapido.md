@@ -14,7 +14,7 @@
 
 ## Uso diario (igual en ambas)
 
-1. **Login:** usuario `secretaria` / clave `31enero2026`. Cámbiela en Config.
+1. **Login:** usuario `secretaria` y la clave de **clave_inicial.txt**. Cámbiela en Config.
 2. **Socios:** cédula de 10 dígitos; los montos aceptan punto o coma (25.50 o 25,50). N.º y orden alfabéticos automáticos (sin digitar).
 3. **Reunión (último sábado):** generar asistencia/café/mensualidad, cobrar y, al final, *Terminar sesión y guardar* (bloquea la edición; Reabrir solo para corregir). Extraordinarios: otra fecha + título, solo pasa lista.
 4. **Consulta** por cédula: comprobante formal con logo, firmas y espacio para sello.

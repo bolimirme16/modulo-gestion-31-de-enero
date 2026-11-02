@@ -9,7 +9,7 @@
 
 1. Doble clic en **Modulo Gestion 31 DE ENERO NARCIZA DE JESUS.exe** (tiene el logo).
    Aparece el splash vinotinto con el logo (~6 segundos) y el sistema abre en pantalla completa.
-2. Ingrese con **secretaria / 31enero2026**. Cambie la clave en ⚙ Config.
+2. Ingrese con el usuario **secretaria** y la clave que el sistema generó en **clave_inicial.txt** (misma carpeta del programa). Cámbiela en ⚙ Config.
 3. Para salir use el botón rojo **⏻ Cerrar programa** (arriba a la derecha) o la X.
    Apague el PC solo cuando vea "Programa cerrado ✅".
 
@@ -51,5 +51,5 @@ orden alfabético** y definen la comisión de café (C1–C9 de 7, C10 de 6).
 | "Cédula inválida" | Debe tener 10 números; si avisa del verificador, revísela (igual se guarda) |
 | "Monto inválido" | Use `25.50` o `25,50`; nada de doble punto ni letras |
 | Reunión bloqueada | Está cerrada: pulse *Reabrir* para corregir y vuelva a terminarla |
-| Olvidó la clave | Reinstale la carpeta de entrega (clave inicial `31enero2026`) — no se pierde nada si tiene respaldo |
+| Olvidó la clave | Reinstale la carpeta de entrega: el sistema genera una clave nueva en **clave_inicial.txt**. No se pierde nada si tiene respaldo |
 | PC nuevo | Copie la carpeta del programa + pegue su último `.db` como `asociacion.db` |

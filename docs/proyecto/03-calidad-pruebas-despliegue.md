@@ -61,7 +61,7 @@ Guardado en `Modulo Gestion 31 DE ENERO NARCIZA DE JESUS.spec` para reconstruir 
 
 1. Carpeta del EXE en lugar con escritura (Documentos o USB). 2. WebView2 presente
    (Windows 10/11 lo trae; si no, instalador gratuito Microsoft). 3. Doble-clic al EXE.
-4. Login `secretaria / 31enero2026` → cambiar clave en Config. 5. Verificar integridad.
+4. Login con `secretaria` y la clave de `clave_inicial.txt`, y cambiarla en Config. 5. Verificar integridad.
 6. Primera carga de los 69 socios.
 
 ### Respaldo y rollback
