@@ -6,6 +6,12 @@ __pycache__/
 *.db
 *.db-journal
 *.sqlite3
+# Secretos de ejecución: los genera la aplicación en el primer arranque
+clave_sesion.key
+clave_inicial.txt
+.env
+*.pem
+*.key
 # Empaquetado PyInstaller (pesado y regenerable con el .spec)
 dist/
 build/

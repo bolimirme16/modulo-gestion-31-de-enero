@@ -34,8 +34,9 @@ H2, pero **no tenía reglas escritas**. La auditoría encontró:
 | Rama `valery/toolchain` ya fusionada y sin borrar | Desorden visible en el remoto |
 | Commits iniciales sin convención | Historias heterogéneas (`Sistema gestion socios v1.2.0`) |
 
-Estos hallazgos se corrigieron en el hito H3 mediante tres ramas temáticas, cada una con su
-propio *pull request* y revisión cruzada.
+Estos hallazgos se corrigieron en el hito H3 mediante siete ramas temáticas, cada una con su
+propio *pull request* y revisión cruzada. La rama `valery/toolchain` se conserva sin borrar por
+decisión del equipo: documenta la entrega de H2 y su borrado no aporta evidencia adicional.
 
 ---
 
@@ -113,15 +114,42 @@ Configuración aplicada en GitHub sobre `main`:
 Esta configuración es la que convierte las reglas escritas en reglas **exigibles**: sin ella,
 `CONTRIBUTING.md` sería una recomendación.
 
+La regla vigente se puede comprobar en cualquier momento sin abrir la interfaz:
+
+```bash
+gh api repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection
+```
+
+La salida esperada está guardada en `docs/evidencias/09-proteccion-de-main.txt`.
+
+### 4.7 Gestión de secretos
+
+Una auditoría posterior al cierre detectó dos debilidades en el código del producto y se
+corrigieron en el mismo hito:
+
+| Hallazgo | Riesgo | Corrección |
+|----------|--------|------------|
+| `app.secret_key` con valor literal en `app.py` | Cualquiera con acceso al repositorio podía firmar cookies de sesión | La clave se lee de `SECRET_KEY` o se genera con `secrets.token_urlsafe(48)` en `clave_sesion.key`, fuera del control de versiones |
+| Contraseña inicial `secretaria / 31enero2026` escrita en el código, los manuales y la pantalla de login | Credencial compartida y pública en cinco archivos | Se genera al azar en el primer arranque y se escribe una sola vez en `clave_inicial.txt`; la documentación ya no reproduce ninguna clave |
+
+`.gitignore` excluye `clave_sesion.key`, `clave_inicial.txt`, `.env`, `*.pem` y `*.key`. La
+verificación es reproducible con:
+
+```bash
+git grep -n -i "secret_key\|31enero2026" -- . ':!docs/10-gobierno-del-repositorio.md'
+```
+
+que no debe devolver coincidencias fuera de este documento.
+
 > **Decisión registrada — visibilidad del repositorio.** GitHub no aplica protección de ramas
 > ni *rulesets* a repositorios **privados** en el plan gratuito: la propia interfaz advierte que
 > las reglas «no se aplicarán hasta pasar a una organización con GitHub Team». Para que la
 > protección fuera real y no solo declarativa se cambió la visibilidad a **pública**, después de
-> verificar que el historial no contiene bases de datos, credenciales ni datos personales reales
-> (los ejemplos del contrato y de las historias usan cédulas y nombres ficticios; las bases
-> `*.db` están excluidas desde el primer commit). La alternativa habría sido pagar GitHub Team o
-> aceptar reglas no aplicadas; ninguna de las dos se consideró adecuada para el alcance del
-> proyecto.
+> comprobar que el historial no contiene bases de datos ni datos personales reales (`*.db` está
+> excluido desde el primer commit y los ejemplos usan cédulas ficticias). La auditoría de
+> credenciales se hizo después y su resultado se documenta en §4.7. La alternativa habría sido
+> pagar GitHub Team o aceptar reglas no aplicadas; ninguna de las dos se consideró adecuada para
+> el alcance del proyecto.
 
 ---
 
@@ -179,20 +207,30 @@ El historial del repositorio permite atribuir cada cambio a su autor. En el hito
 
 | Integrante | Rama | Aporte |
 |------------|------|--------|
-| Bolívar A. Valenzuela M. | `chore/gobernanza` | `CONTRIBUTING.md`, `LICENSE`, `CODEOWNERS`, plantillas de PR e issue, este documento, protección de `main` |
-| José Miguel Guerrero T. | `docs/changelog` | `CHANGELOG.md` con el historial H1–H3 y `SECURITY.md` |
-| Alejandra V. Lucero B. | `chore/higiene` | `.gitattributes`, `.editorconfig`, sección de gobierno en el `README` |
+| Bolívar A. Valenzuela M. | `chore/gobernanza`, `chore/higiene`, `docs/matriz-git-svn`, `fix/dependencias-flask`, `practica/conflicto-a` | `CONTRIBUTING.md`, `LICENSE`, `CODEOWNERS`, plantillas de PR e issue, este documento, protección de `main`, `.gitattributes`, `.editorconfig`, matriz Git vs SVN, ADR-004, revisión de dependencias y el conflicto deliberado |
+| José Miguel Guerrero T. | `docs/changelog`, `docs/aporte-jose` | `CHANGELOG.md` con el historial H1–H3, `SECURITY.md` y el registro de participación individual |
+| Valery Lucero B. | `valery/toolchain` (hito H2) | Mapa de *toolchain* e historias de usuario. Sin cambios propios en H3 |
 
 Cada rama se integró mediante un *pull request* revisado por otro integrante, de modo que el
 aporte individual es visible tanto en los commits como en las revisiones.
+
+> **Registro honesto.** En H3 solo dos integrantes produjeron cambios: la tercera integrante no
+> participó en este hito. La tabla lo declara en lugar de atribuirle trabajo ajeno, porque una
+> atribución falsa sería un defecto de auditoría más grave que la ausencia misma. El historial de
+> `git log` y de la API de GitHub es la fuente de verdad y contradice cualquier atribución
+> inventada.
 
 ---
 
 ## 9. Resultados
 
-- Tres *pull requests* fusionados con revisión cruzada.
-- `main` protegida: sin push directo y con CI obligatoria.
-- Repositorio sin ramas huérfanas.
+- Siete *pull requests* fusionados con revisión cruzada (y dos más del hito anterior).
+- `main` protegida: sin push directo y con CI obligatoria, también para el administrador.
+- Ramas de trabajo conservadas tras la fusión (`chore/*`, `docs/*`, `fix/*`, `practica/*`) y las
+  dos de hitos anteriores (`valery/toolchain`, `contratos-api-bdd`): se mantienen como evidencia
+  de auditoría, no como trabajo pendiente.
+- Ninguna credencial en el repositorio: clave de sesión generada en el primer arranque y
+  contraseña inicial aleatoria (ver §4.7).
 - Versión `v0.3.0` publicada con notas de liberación.
 - Documentación de gobierno completa y enlazada desde el `README`.
 

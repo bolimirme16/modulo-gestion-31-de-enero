@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Asociación 31 DE ENERO NARCIZA DE JESUS - sistema local (Flask + SQLite)."""
 VERSION = "1.2.0"
-import sqlite3, os, sys, calendar
+import sqlite3, os, sys, calendar, secrets
 from datetime import datetime, date
 from functools import wraps
 from flask import Flask, request, redirect, url_for, render_template, g, flash, session, send_file
@@ -47,7 +47,73 @@ ESTADOS_CIVILES = ["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Unión l
 
 app = Flask(__name__, template_folder=_recurso("templates"),
               static_folder=_recurso("static"))
-app.secret_key = "31deenero-local-2026"
+
+
+def _clave_sesion():
+    """Clave de firma de la cookie de sesión.
+
+    Orden de precedencia:
+      1. Variable de entorno ``SECRET_KEY`` (recomendado en despliegue).
+      2. Archivo local ``clave_sesion.key`` junto a la base de datos.
+      3. Si no existe ninguno, se genera una clave aleatoria y se guarda en ese
+         archivo con permisos de solo lectura del propietario.
+
+    La clave nunca se versiona: ``clave_sesion.key`` está en ``.gitignore``.
+    """
+    del_entorno = os.environ.get("SECRET_KEY")
+    if del_entorno:
+        return del_entorno
+
+    ruta = os.path.join(BASE_DIR, "clave_sesion.key")
+    try:
+        with open(ruta, encoding="utf-8") as fh:
+            guardada = fh.read().strip()
+        if guardada:
+            return guardada
+    except OSError:
+        pass
+
+    nueva = secrets.token_urlsafe(48)
+    try:
+        with open(ruta, "w", encoding="utf-8") as fh:
+            fh.write(nueva)
+        os.chmod(ruta, 0o600)
+    except OSError:
+        # Disco de solo lectura (por ejemplo, un USB protegido): la clave vale
+        # para esta ejecución y se avisa en lugar de impedir el arranque.
+        print("[31Enero] Aviso: no se pudo guardar la clave de sesión en disco; "
+              "las sesiones no sobrevivirán al reinicio.")
+    return nueva
+
+
+app.secret_key = _clave_sesion()
+
+
+def _guardar_clave_inicial(clave):
+    """Escribe en disco la clave inicial recién generada.
+
+    Se usa solo la primera vez que se crea el usuario ``secretaria``. El archivo
+    queda junto a la base de datos, fuera del control de versiones, y debe
+    borrarse después de cambiar la clave desde ⚙ Config.
+    """
+    ruta = os.path.join(BASE_DIR, "clave_inicial.txt")
+    try:
+        with open(ruta, "w", encoding="utf-8") as fh:
+            fh.write(
+                "Sistema Asociación 31 de Enero\n"
+                "Usuario: secretaria\n"
+                f"Clave inicial: {clave}\n\n"
+                "Cámbiela en ⚙ Config tras el primer inicio de sesión.\n"
+                "Después de cambiarla puede borrar este archivo.\n"
+            )
+        os.chmod(ruta, 0o600)
+        destino = ruta
+    except OSError:
+        # Si el disco no admite escritura, la clave solo se muestra por consola.
+        destino = "(no se pudo escribir el archivo)"
+    print(f"[31Enero] Clave inicial de 'secretaria': {clave}")
+    print(f"[31Enero] También quedó registrada en {destino}")
+
 
 # ---------- utils ----------
 def cedula_valida(ced):
@@ -127,11 +193,15 @@ def init_db():
             _sh.copyfile(semilla, LOGO_PATH)
     except Exception:
         pass
-    # usuario por defecto: secretaria / 31enero2026
+    # Usuario inicial: la clave se genera al azar en el primer arranque y se
+    # escribe una sola vez en clave_inicial.txt. No hay contraseña incrustada
+    # ni en el código ni en los manuales.
     r = db.execute("SELECT 1 FROM usuarios WHERE username='secretaria'").fetchone()
     if not r:
+        inicial = secrets.token_urlsafe(9)
         db.execute("INSERT INTO usuarios(username,pass_hash,nombre) VALUES(?,?,?)",
-                   ("secretaria", generate_password_hash("31enero2026"), "Secretaría"))
+                   ("secretaria", generate_password_hash(inicial), "Secretaría"))
+        _guardar_clave_inicial(inicial)
     # migración: columnas nuevas en BD ya creadas
     cols_reu = [c[1] for c in db.execute("PRAGMA table_info(reuniones)").fetchall()]
     if "titulo" not in cols_reu:

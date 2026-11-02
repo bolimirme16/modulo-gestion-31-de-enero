@@ -1,0 +1,73 @@
+CONFIGURACION EFECTIVA DE PROTECCION DE LA RAMA main
+Repositorio: https://github.com/bolimirme16/modulo-gestion-31-de-enero
+Fuente: GET /repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection
+Fecha de captura: 2026-11-01
+
+== RESUMEN ==
+Push directo (allow_force_pushes / push restrictions): bloqueado
+Pull request obligatorio: si
+Aprobaciones requeridas: 1
+Descartar aprobaciones antiguas: True
+Requiere aprobacion del ultimo push: False
+Revision de CODEOWNERS obligatoria: False
+Hilos de conversacion resueltos: True
+Force push permitido: False
+Borrado de la rama permitido: False
+Aplica tambien a administradores (enforce_admins): True
+Checks obligatorios: ['Spectral + Ruff + pytest']
+Rama estricta (debe estar al dia): True
+
+== RESPUESTA COMPLETA DE LA API ==
+{
+  "allow_deletions": {
+    "enabled": false
+  },
+  "allow_force_pushes": {
+    "enabled": false
+  },
+  "allow_fork_syncing": {
+    "enabled": false
+  },
+  "block_creations": {
+    "enabled": false
+  },
+  "enforce_admins": {
+    "enabled": true,
+    "url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection/enforce_admins"
+  },
+  "lock_branch": {
+    "enabled": false
+  },
+  "required_conversation_resolution": {
+    "enabled": true
+  },
+  "required_linear_history": {
+    "enabled": false
+  },
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false,
+    "require_last_push_approval": false,
+    "required_approving_review_count": 1,
+    "url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection/required_pull_request_reviews"
+  },
+  "required_signatures": {
+    "enabled": false,
+    "url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection/required_signatures"
+  },
+  "required_status_checks": {
+    "checks": [
+      {
+        "app_id": 15368,
+        "context": "Spectral + Ruff + pytest"
+      }
+    ],
+    "contexts": [
+      "Spectral + Ruff + pytest"
+    ],
+    "contexts_url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection/required_status_checks/contexts",
+    "strict": true,
+    "url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection/required_status_checks"
+  },
+  "url": "https://api.github.com/repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection"
+}
