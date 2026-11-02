@@ -70,18 +70,19 @@ def _clave_sesion():
             guardada = fh.read().strip()
         if guardada:
             return guardada
-    except FileNotFoundError:
+    except OSError:
         pass
 
     nueva = secrets.token_urlsafe(48)
-    with open(ruta, "w", encoding="utf-8") as fh:
-        fh.write(nueva)
     try:
+        with open(ruta, "w", encoding="utf-8") as fh:
+            fh.write(nueva)
         os.chmod(ruta, 0o600)
     except OSError:
-        # En Windows el modelo de permisos es otro; el archivo queda igualmente
-        # fuera del control de versiones.
-        pass
+        # Disco de solo lectura (por ejemplo, un USB protegido): la clave vale
+        # para esta ejecución y se avisa en lugar de impedir el arranque.
+        print("[31Enero] Aviso: no se pudo guardar la clave de sesión en disco; "
+              "las sesiones no sobrevivirán al reinicio.")
     return nueva
 
 
@@ -96,20 +97,22 @@ def _guardar_clave_inicial(clave):
     borrarse después de cambiar la clave desde ⚙ Config.
     """
     ruta = os.path.join(BASE_DIR, "clave_inicial.txt")
-    with open(ruta, "w", encoding="utf-8") as fh:
-        fh.write(
-            "Sistema Asociación 31 de Enero\n"
-            "Usuario: secretaria\n"
-            f"Clave inicial: {clave}\n\n"
-            "Cámbiela en ⚙ Config tras el primer inicio de sesión.\n"
-            "Después de cambiarla puede borrar este archivo.\n"
-        )
     try:
+        with open(ruta, "w", encoding="utf-8") as fh:
+            fh.write(
+                "Sistema Asociación 31 de Enero\n"
+                "Usuario: secretaria\n"
+                f"Clave inicial: {clave}\n\n"
+                "Cámbiela en ⚙ Config tras el primer inicio de sesión.\n"
+                "Después de cambiarla puede borrar este archivo.\n"
+            )
         os.chmod(ruta, 0o600)
+        destino = ruta
     except OSError:
-        pass
+        # Si el disco no admite escritura, la clave solo se muestra por consola.
+        destino = "(no se pudo escribir el archivo)"
     print(f"[31Enero] Clave inicial de 'secretaria': {clave}")
-    print(f"[31Enero] También quedó registrada en {ruta}")
+    print(f"[31Enero] También quedó registrada en {destino}")
 
 
 # ---------- utils ----------
