@@ -1,0 +1,92 @@
+EVIDENCIA 11 · FALLA PROVOCADA Y CORREGIDA EN EL PIPELINE
+=========================================================
+Proyecto : Sistema de Gestión Automatizada y Auditoría — Asociación 31 de Enero
+Hito     : H4 · v0.4.0 (SEM04)
+Fecha    : 05/11/2026
+Rama     : feat/sem04-pipeline
+PR       : #25
+
+OBJETIVO
+--------
+Demostrar que el check obligatorio de main no es decorativo: un cambio con una
+prueba incorrecta debe quedar en rojo y bloquear la fusión; la corrección debe
+volver a ponerlo en verde.
+
+1. COMMIT QUE PROVOCA LA FALLA
+------------------------------
+Commit : 74cf8d2050de177830fb263b442f54985bb59ea2
+Mensaje: test(e1): agrega la prueba de aceptacion de la multa por inasistencia
+Archivo: tests/test_e1_multa.py
+
+La prueba derivaba el escenario E1 y el criterio CA-02.1, pero se dejó un valor
+esperado incorrecto (4,00 en lugar de 5,00) de forma deliberada.
+
+Ejecución local:
+  $ pytest tests/test_e1_multa.py -q
+  ...
+  >       assert registro["multa"] == 4.00
+  E       assert 5.0 == 4.0
+  tests\test_e1_multa.py:17: AssertionError
+  FAILED tests/test_e1_multa.py::test_e1_ausencia_no_justificada_genera_multa_de_cinco_dolares
+
+2. RUN EN ROJO
+--------------
+Run      : 42045339641
+Evento   : pull_request
+Inicio   : 2026-11-05T14:28:25Z
+Fin      : 2026-11-05T14:28:51Z
+Conclusión: failure
+URL      : https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/runs/42045339641
+
+Pasos:
+  1 Set up job                              success
+  2 Descargar el repositorio                success
+  3 Preparar Python                         success
+  4 Preparar Node.js                        success
+  5 Instalar dependencias de Python         success
+  6 Instalar Spectral                       success
+  7 Validar el contrato OpenAPI (T4)        success
+  8 Análisis estático del código (T8)       success
+  9 Pruebas unitarias, de integración y BDD failure   <-- puerta que bloquea
+  ...
+  Conclusión del job: failure
+
+El resto de puertas pasó: la única que falló fue la prueba, como correspondía.
+
+3. COMMIT QUE CORRIGE
+---------------------
+Commit : e949bc08234e5f8f29492964f3d84f64c550ecd4
+Mensaje: fix(e1): corrige el valor esperado de la multa y verifica el corte
+Cambios: valor esperado 5,00 + verificación del estado de cuenta y del corte
+         de caja (totalIngresos == 5,00 y consistente == True).
+
+4. RUN EN VERDE
+---------------
+Run      : 42045483208
+Evento   : pull_request
+Inicio   : 2026-11-05T14:29:21Z
+Fin      : 2026-11-05T14:29:50Z
+Conclusión: success
+URL      : https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/runs/42045483208
+
+Pasos: los 19 pasos del job en success, incluida la puerta de pruebas.
+
+5. MTTR DE LA FALLA
+-------------------
+Del cierre del run rojo (14:28:51Z) al cierre del run verde (14:29:50Z):
+  59 segundos.
+
+Del inicio del run rojo (14:28:25Z) al cierre del run verde (14:29:50Z):
+  1 minuto 25 segundos.
+
+6. CÓMO REPRODUCIRLO
+--------------------
+  git clone https://github.com/bolimirme16/modulo-gestion-31-de-enero
+  cd modulo-gestion-31-de-enero
+  git checkout 74cf8d2
+  pytest tests/test_e1_multa.py -q      # debe fallar
+  git checkout e949bc0
+  pytest tests/test_e1_multa.py -q      # debe pasar
+
+También se puede abrir el PR #25 y revisar la pestaña Checks: el primer commit
+aparece en rojo y el segundo en verde.
