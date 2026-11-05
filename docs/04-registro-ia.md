@@ -140,6 +140,57 @@
 
 ---
 
+## 4. Actividad autónoma — Semana 4 (Informe, repositorio y pipeline)
+
+### Actividad 1 · Pipeline CI con puertas de calidad y build de documentación
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (agente de codificación en el repositorio: OpenCode, modelo DeepSeek V4.1 Flash; noviembre de 2026) |
+| **Prompt resumido** | “Completa `.github/workflows/ci.yml` para que en cada PR ejecute lint, análisis estático, pruebas, validación del contrato OpenAPI con Spectral y build de la documentación. Usa permisos mínimos, acciones fijadas por versión y ningún secreto. Añade un script de build que falle si hay enlaces internos rotos.” |
+| **Salida** | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml), [`scripts/build_docs.py`](../scripts/build_docs.py), `requirements-dev.txt` y las insignias de [`README.md`](../README.md). |
+| **Cómo se verificó** | (1) Ejecución real del pipeline: run rojo `42045339641` y run verde `42045483208`; (2) `ruff check src tests scripts`, `bandit -q -r src -x src/generated -ll`, `pytest -q` y `python scripts/build_docs.py --out site` en local; (3) revisión de la configuración de protección de `main` por API. |
+| **Aceptado** | Estructura de un solo trabajo con seis pasos, permisos `contents: read`, `persist-credentials: false` y nombres de paso explícitos. |
+| **Modificado** | La propuesta inicial usaba `pull_request_target` y acciones por rama (`@main`). Se cambió a `pull_request` y a versiones fijas (`@v4`, `@v5`); también se movió el lint antes de las pruebas para dar retroalimentación más rápida. |
+| **Rechazado** | Se descartó ejecutar `npm install -g @stoplight/spectral-cli` sin versión y publicar el artefacto de documentación con retención indefinida. |
+
+### Actividad 2 · Informe final y matriz de trazabilidad
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Asistente de IA (OpenCode, DeepSeek V4.1 Flash) para el borrador; revisión y decisiones del equipo |
+| **Prompt resumido** | “Integra en `docs/09-informe-final.md` la arquitectura, la cadena CASE, el versionamiento y la automatización, con análisis crítico y métricas DORA calculadas a partir del historial. Construye `docs/05-trazabilidad.md` con la cadena requisito → escenario → ADR → artefacto → commit/PR → pipeline, usando solo identificadores y archivos que existan en el repositorio.” |
+| **Salida** | [`docs/09-informe-final.md`](09-informe-final.md) y [`docs/05-trazabilidad.md`](05-trazabilidad.md). |
+| **Cómo se verificó** | (1) Cada enlace del informe y de la matriz se resuelve en el repositorio; (2) `python scripts/build_docs.py` construyó 25 documentos sin enlaces rotos; (3) los identificadores HU, CA, E y ADR se contrastaron con `docs/07-historias-y-criterios.md`, `docs/01-contexto-y-drivers.md` y `docs/03-adr/`; (4) las cifras DORA se recalcularon desde la API de GitHub. |
+| **Aceptado** | La estructura de ocho secciones (a–h) y la separación entre “qué funcionó” y “qué quedó débil”. |
+| **Modificado** | El borrador presentaba las métricas DORA como concluyentes; se corrigió para declarar que son proxies con una muestra de cinco versiones y sin despliegue a producción. |
+| **Rechazado** | Se descartaron afirmaciones de mejora de productividad sin medición y cualquier dato personal de los socios. |
+
+### Actividad 3 · Cálculo de métricas DORA
+
+| Campo | Registro |
+|-------|----------|
+| **Herramienta y versión** | Script propio sobre la API REST de GitHub (`/pulls`, `/actions/runs`) y `git log` |
+| **Prompt resumido** | “Calcula frecuencia de despliegue, lead time, change failure rate y MTTR con los datos reales del repositorio. Explica la fórmula y el corte temporal de cada cifra.” |
+| **Salida** | [`docs/evidencias/12-metricas-dora.txt`](evidencias/12-metricas-dora.txt) y la sección (f) del informe final. |
+| **Cómo se verificó** | Recálculo independiente con `git log -1 --format='%cI'` para las etiquetas y con los campos `created_at`, `merged_at` y `conclusion` de la API; contraste de los run ID citados. |
+| **Aceptado** | Las fórmulas y la distinción entre *change failure rate* de CI y de versiones. |
+| **Modificado** | Se sustituyó la media del *lead time* por la mediana, porque un PR de 21,7 h distorsionaba el promedio. |
+| **Rechazado** | Se descartó presentar la frecuencia de despliegue como si hubiera producción real. |
+
+### Lista de verificación del workflow generado
+
+| Verificación exigida | Resultado | Evidencia |
+| :--- | :---: | :--- |
+| Permisos mínimos | ✔ | `permissions: contents: read` en `ci.yml` |
+| Acciones fijadas por versión | ✔ | `checkout@v4`, `setup-python@v5`, `setup-node@v4`, `upload-artifact@v4` |
+| Herramientas fijadas por versión | ✔ | `@stoplight/spectral-cli@6.17.0`; `requirements-dev.txt` con versiones exactas |
+| Ausencia de secretos | ✔ | No se usa `secrets.*`; auditoría en [`evidencias/10-auditoria-de-secretos.txt`](evidencias/10-auditoria-de-secretos.txt) |
+| Ejecución real | ✔ | Runs `42045339641` (rojo) y `42045483208` (verde) |
+| Sin datos personales | ✔ | Solo cédulas ficticias en `tests/` |
+
+---
+
 ## Declaración final del equipo
 
 El análisis del contexto, los stakeholders, las restricciones, los drivers, los escenarios, la priorización, los pesos, la decisión de estilo y la cadena CASE son **de autoría del equipo**. La IA se usó **solo** para:
@@ -151,5 +202,6 @@ El análisis del contexto, los stakeholders, las restricciones, los drivers, los
 5. Redactar el borrador de las reglas de contribución, plantillas y `CODEOWNERS`, verificados contra la configuración real de protección de `main` (**OpenCode, DeepSeek V4.1 Flash**).
 6. Diseñar el ejercicio de conflicto deliberado y su reporte, verificado con `git log --graph` y la CI del PR #7 (**OpenCode, DeepSeek V4.1 Flash**).
 7. Redactar el borrador de la matriz Git vs SVN y del ADR-004, contrastado con las dos fuentes de la actividad (**OpenCode, DeepSeek V4.1 Flash**).
+8. Proponer el borrador del pipeline CI, del build de documentación y de las métricas DORA, verificado con ejecuciones reales y con la API de GitHub (**OpenCode, DeepSeek V4.1 Flash**).
 
 Toda salida fue **verificada** contra el análisis propio y la documentación del repositorio; lo no verificable se rechazó. El equipo asume la responsabilidad integral del contenido del dossier y los artefactos del proyecto.

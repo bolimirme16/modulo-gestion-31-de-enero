@@ -16,6 +16,35 @@ del módulo, mientras el producto está en desarrollo.
 
 ---
 
+## [0.4.0] — 2026-11-06 — Informe, repositorio y pipeline (SEM04)
+
+### Añadido
+- `.github/workflows/ci.yml` con cinco puertas de calidad: lint (Ruff), análisis estático de
+  seguridad (Bandit), contrato OpenAPI (Spectral), pruebas (pytest) y build de la documentación.
+  Permisos mínimos (`contents: read`), acciones fijadas por versión y ejecución sin secretos.
+- `scripts/build_docs.py`: construye el sitio HTML de `docs/` y falla si hay enlaces internos
+  rotos; publica el artefacto `documentacion-html` en cada ejecución.
+- `docs/05-trazabilidad.md`: matriz requisito → escenario → ADR → artefacto → commit/PR →
+  pipeline, con los identificadores HU-01…HU-07, CA-0x.y, E1…E6 y ADR-001…ADR-004.
+- `docs/09-informe-final.md`: informe integrador con análisis crítico, métricas DORA y límites
+  del proceso.
+- `docs/evidencias/11-falla-provocada.txt`, `12-metricas-dora.txt` y
+  `13-proteccion-y-checks.txt`.
+- Insignias de CI, versión, licencia, Python y puertas de calidad en `README.md`.
+
+### Cambiado
+- `requirements-dev.txt` incorpora Bandit y Markdown con versiones exactas.
+- El paso de lint se extiende a `scripts/`.
+- El registro de IA (`docs/04-registro-ia.md`) incluye la revisión del workflow generado con
+  lista de verificación.
+
+### Corregido
+- La prueba de aceptación del escenario E1 esperaba una multa de $4,00; se corrigió a $5,00 y se
+  añadió la verificación del corte de caja. El ciclo rojo → verde quedó registrado en los runs
+  `42045339641` y `42045483208`.
+
+---
+
 ## [0.3.1] — 2026-11-01 — Corrección de seguridad
 
 ### Seguridad

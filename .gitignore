@@ -27,3 +27,6 @@ node_modules/
 .npm/
 .ruff_cache/
 .pytest_cache/
+# Salida del build de documentación y borradores locales de la API de GitHub
+site/
+.tmp-api/

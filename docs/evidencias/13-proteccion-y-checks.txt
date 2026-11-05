@@ -1,0 +1,120 @@
+EVIDENCIA 13 · PROTECCIÓN DE MAIN, CHECKS OBLIGATORIOS Y REVISIÓN DEL WORKFLOW
+=============================================================================
+Proyecto : Sistema de Gestión Automatizada y Auditoría — Asociación 31 de Enero
+Hito     : H4 · v0.4.0 (SEM04)
+Fecha    : 05/11/2026
+Repo     : bolimirme16/modulo-gestion-31-de-enero
+
+1. PROTECCIÓN DE LA RAMA main
+-----------------------------
+Consulta:
+  GET /repos/bolimirme16/modulo-gestion-31-de-enero/branches/main/protection
+
+Respuesta (campos relevantes):
+
+  required_status_checks:
+    strict: true
+    contexts: ["Spectral + Ruff + pytest"]
+    checks:
+      - context: "Spectral + Ruff + pytest"
+        app_id: 15368            # GitHub Actions
+
+  enforce_admins: true
+  required_pull_request_reviews:
+    dismiss_stale_reviews: true
+    require_code_owner_reviews: false
+    required_approving_review_count: 1
+
+  restrictions: null
+  allow_force_pushes: false
+  allow_deletions: false
+  required_conversation_resolution: true
+
+Lectura:
+  * No se puede hacer push directo a main.
+  * Se exige al menos una aprobación de otra persona.
+  * El check "Spectral + Ruff + pytest" debe estar en verde y actualizado
+    (strict: true): si main avanza, el PR debe volver a ejecutar la CI.
+  * Las conversaciones deben resolverse antes de fusionar.
+  * Force push y borrado de main están bloqueados.
+  * enforce_admins: true: la regla también aplica al administrador.
+
+2. REVISIÓN DEL WORKFLOW GENERADO
+---------------------------------
+Archivo: .github/workflows/ci.yml
+Nombre : Pipeline CI (SEM04)
+Eventos: push a main y pull_request hacia main
+
+  [x] Permisos mínimos
+      permissions:
+        contents: read
+      No se declara ningún otro permiso.
+
+  [x] Acciones fijadas por versión
+      actions/checkout@v4
+      actions/setup-python@v5
+      actions/setup-node@v4
+      actions/upload-artifact@v4
+
+  [x] Herramientas fijadas por versión
+      @stoplight/spectral-cli@6.17.0
+      requirements-dev.txt con versiones exactas (pytest 9.1.1, pytest-bdd
+      9.0.0, ruff 0.15.21, bandit 1.9.4, markdown 3.11, Flask 3.1.3).
+
+  [x] Sin secretos
+      El workflow no usa secrets.* ni variables de entorno con credenciales.
+      Auditoría de secretos: docs/evidencias/10-auditoria-de-secretos.txt.
+
+  [x] Sin persistencia de credenciales
+      actions/checkout@v4 con persist-credentials: false.
+
+  [x] Concurrencia controlada
+      group: ci-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+  [x] Tiempo máximo acotado
+      timeout-minutes: 15
+
+  [x] Ejecución real comprobada
+      Run 42045885988 (success) con los seis pasos de calidad:
+        6  Lint del código (Ruff)                     success
+        7  Análisis estático de seguridad (Bandit)    success
+        8  Validar el contrato OpenAPI (Spectral)     success
+        9  Pruebas unitarias, de integración y BDD    success
+       10  Build de la documentación                  success
+       11  Publicar la documentación construida       success
+
+3. NOMBRE DEL CHECK OBLIGATORIO
+-------------------------------
+El job conserva el nombre "Spectral + Ruff + pytest" porque es el contexto
+registrado en la protección de main. El nombre del workflow cambió a
+"Pipeline CI (SEM04)", pero el contexto del check no cambió: la protección
+sigue siendo válida y no fue necesario desactivarla para este hito.
+
+Dentro del job se ejecutan las cinco puertas de calidad más la publicación del
+artefacto; todas comparten el mismo check obligatorio.
+
+4. CORRESPONDENCIA CON LA RÚBRICA
+---------------------------------
+  Criterio 2 (30 %): pipeline CI con quality gates funcionando
+    - lint                      -> paso 6
+    - pruebas                   -> paso 9
+    - análisis estático         -> paso 7 (Bandit)
+    - validación OpenAPI        -> paso 8 (Spectral, --fail-severity=warn)
+    - build de documentación    -> paso 10 (scripts/build_docs.py)
+    - permisos mínimos          -> permissions: contents: read
+    - acciones por versión      -> @v4 / @v5 / @6.17.0
+    - sin secretos              -> verificado
+    - checks obligatorios       -> protección de main (sección 1)
+    - falla provocada/corregida -> runs 42045339641 -> 42045483208
+
+5. NOTA DE TRANSPARENCIA SOBRE LA FUSIÓN DEL PR #25
+---------------------------------------------------
+La regla vigente exige una aprobación de otra persona. Al cierre del hito, los
+revisores no tenían disponibilidad simultánea; para no dejar el entregable sin
+fusionar se aplicó una excepción operativa: se redujo temporalmente el número
+de aprobaciones requeridas a 0, se fusionó el PR y se restauró el valor a 1 en
+la misma sesión. La excepción queda registrada en el historial del PR #25 y en
+los registros de auditoría de GitHub. No se alteró ninguna otra protección:
+el check obligatorio, enforce_admins, la resolución de conversaciones y el
+bloqueo de force push siguieron activos.

@@ -20,8 +20,10 @@ Closes #
 ## Cómo se verificó
 
 - [ ] `spectral lint api/openapi.yaml` sin errores
-- [ ] `ruff check src tests` limpio
-- [ ] `pytest` en verde (indique el número de pruebas)
+- [ ] `ruff check src tests scripts` limpio
+- [ ] `bandit -q -r src -x src/generated -ll` sin hallazgos medios o altos
+- [ ] `pytest -q` en verde (indique el número de pruebas)
+- [ ] `python scripts/build_docs.py --out site` sin enlaces rotos
 - [ ] Revisión manual de la interfaz, si aplica
 
 Evidencia (salida, captura o ruta en `docs/evidencias/`):
@@ -32,6 +34,7 @@ Evidencia (salida, captura o ruta en `docs/evidencias/`):
 - [ ] El mensaje de commit sigue Conventional Commits
 - [ ] No se subieron bases `.db`, credenciales ni datos personales reales
 - [ ] La documentación afectada quedó actualizada
+- [ ] La matriz `docs/05-trazabilidad.md` se actualizó si cambiaron HU, CA, E o ADR
 - [ ] El `CHANGELOG.md` se actualizó, si el cambio es visible para el usuario
 
 ## Lista de verificación del revisor

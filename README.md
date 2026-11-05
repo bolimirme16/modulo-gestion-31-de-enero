@@ -1,13 +1,16 @@
 # Sistema de Gestión Automatizada y Auditoría — Asociación “31 de Enero Narciza de Jesús”
 
-[![Integración continua](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml/badge.svg)](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml)
+[![Integración continua](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bolimirme16/modulo-gestion-31-de-enero/actions/workflows/ci.yml)
 [![Última versión](https://img.shields.io/github/v/tag/bolimirme16/modulo-gestion-31-de-enero?label=versi%C3%B3n)](https://github.com/bolimirme16/modulo-gestion-31-de-enero/releases)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![Quality gates](https://img.shields.io/badge/quality%20gates-lint%20%C2%B7%20SAST%20%C2%B7%20pytest%20%C2%B7%20OpenAPI%20%C2%B7%20docs-brightgreen)
 
 **Módulo 8 · Automatización de proceso de software (UPEC)**
 **Hito H1 · v0.1.0 · 18/10/2026** — Dossier de arquitectura (SEM01)
 **Hito H2 · v0.2.0 · 25/10/2026** — Cadena CASE y especificación (SEM02)
 **Hito H3 · v0.3.0 (parche v0.3.1) · 01/11/2026** — Repositorio gobernado (SEM03)
+**Hito H4 · v0.4.0 · 06/11/2026** — Informe, repositorio y pipeline (SEM04)
 
 Repositorio de la aplicación de escritorio (100 % offline) para la administración de socios, reuniones, caja y auditoría de la asociación, junto con su documentación. El **dossier de arquitectura** se elabora conforme a ISO/IEC/IEEE 42010:2022 e ISO/IEC 25010:2023, y la **cadena CASE** conforme a ISO/IEC/IEEE 12207:2017 (procesos) e ISO/IEC 14102:2008 (evaluación y selección de herramientas).
 
@@ -38,17 +41,20 @@ Repositorio de la aplicación de escritorio (100 % offline) para la administraci
 │  ├─ 02-vistas-c4/                 # C4 nivel 1 y 2 (como código) + revisión cruzada
 │  ├─ 03-adr/                       # ADR-001 a ADR-004 y matriz de decisión
 │  ├─ 04-registro-ia.md             # Registro de uso de IA
+│  ├─ 05-trazabilidad.md            # ENTREGABLE SEM04 · Matriz requisito → pipeline
 │  ├─ 06-mapa-toolchain.md          # ENTREGABLE SEM02 · Mapa de toolchain
 │  ├─ 07-historias-y-criterios.md   # ENTREGABLE SEM02 · HU + criterios (Gherkin)
 │  ├─ 08-matriz-evaluacion-seleccion.md  # ENTREGABLE SEM02 · Matriz de selección
 │  ├─ 08-matriz-git-vs-svn.md       # ENTREGABLE SEM03 · Matriz Git vs SVN
 │  ├─ 09-informe-cadena-case.md     # ENTREGABLE SEM02 · Informe de la cadena CASE
+│  ├─ 09-informe-final.md           # ENTREGABLE SEM04 · Informe final integrador
 │  ├─ 10-gobierno-del-repositorio.md  # ENTREGABLE SEM03 · Gobierno y trazabilidad
 │  ├─ 11-practica-de-conflicto.md   # ENTREGABLE SEM03 · Conflicto deliberado resuelto
 │  ├─ api/                          # Documentación HTML generada desde el contrato
-│  ├─ evidencias/                   # Transcripciones de ejecución (01–07)
+│  ├─ evidencias/                   # Transcripciones de ejecución (01–13)
 │  └─ proyecto/                     # Documentación técnica del sistema
-└─ .github/workflows/ci.yml         # Integración continua (Spectral + Ruff + pytest)
+├─ scripts/build_docs.py             # Build de la documentación (quality gate)
+└─ .github/workflows/ci.yml         # Pipeline CI (lint · SAST · pytest · OpenAPI · docs)
 ```
 
 ## Entregable SEM01 — Dossier de arquitectura
@@ -93,6 +99,19 @@ Repositorio de la aplicación de escritorio (100 % offline) para la administraci
 | Auditoría de secretos y su corrección | [`docs/evidencias/10-auditoria-de-secretos.txt`](docs/evidencias/10-auditoria-de-secretos.txt) |
 | Historial de versiones | [`CHANGELOG.md`](CHANGELOG.md) |
 | Política de seguridad | [`SECURITY.md`](SECURITY.md) |
+
+## Entregable SEM04 — Informe, repositorio y pipeline
+
+| Pieza | Ruta |
+|-------|------|
+| Pipeline CI con *quality gates* | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
+| Build de la documentación (verifica enlaces internos) | [`scripts/build_docs.py`](scripts/build_docs.py) |
+| Informe final integrador | [`docs/09-informe-final.md`](docs/09-informe-final.md) |
+| Matriz de trazabilidad requisito → escenario → ADR → artefacto → PR → pipeline | [`docs/05-trazabilidad.md`](docs/05-trazabilidad.md) |
+| Falla provocada y corregida (evidencia del pipeline) | [`docs/evidencias/11-falla-provocada.txt`](docs/evidencias/11-falla-provocada.txt) |
+| Métricas DORA y su cálculo | [`docs/evidencias/12-metricas-dora.txt`](docs/evidencias/12-metricas-dora.txt) |
+| Protección de `main` y *checks* obligatorios | [`docs/evidencias/13-proteccion-y-checks.txt`](docs/evidencias/13-proteccion-y-checks.txt) |
+| Registro de IA con revisión del workflow | [`docs/04-registro-ia.md`](docs/04-registro-ia.md) |
 
 ## Trazabilidad S → D → E → ADR → vista
 
@@ -156,7 +175,9 @@ issue  →  rama temática  →  commits convencionales  →  pull request
 ```bash
 spectral lint api/openapi.yaml
 ruff check src tests
-pytest
+bandit -q -r src -x src/generated -ll
+pytest -q
+python scripts/build_docs.py --out site
 ```
 
 ### Versiones
@@ -166,6 +187,8 @@ pytest
 | `v0.1.0` | SEM01 | Dossier de arquitectura |
 | `v0.2.0` | SEM02 | Cadena CASE y especificación |
 | `v0.3.0` | SEM03 | Repositorio gobernado |
+| `v0.3.1` | SEM03 | Parche de seguridad: credenciales fuera del código |
+| `v0.4.0` | SEM04 | Pipeline CI, informe final y matriz de trazabilidad |
 
 ## Equipo
 
