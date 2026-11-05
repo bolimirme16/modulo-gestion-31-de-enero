@@ -1,44 +1,71 @@
-name: Cadena CASE (SEM02)
+name: Pipeline CI (SEM04)
 
-# Integración continua (I-CASE): valida el contrato, lintea y ejecuta las pruebas
-# en cada push y en cada Pull Request, antes de aprobar el merge.
+# Puertas de calidad del proyecto: lint, análisis estático, contrato OpenAPI,
+# pruebas y build de la documentación en cada push y en cada Pull Request.
+# Permisos mínimos: el workflow solo necesita leer el repositorio.
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cadena-case:
+    # El nombre se conserva porque es el check obligatorio de la protección de
+    # main ("Spectral + Ruff + pytest").
     name: Spectral + Ruff + pytest
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Descargar el repositorio
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Preparar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
       - name: Preparar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Instalar dependencias de Python
+      - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: Instalar Spectral
-        run: npm install -g @stoplight/spectral-cli
+      - name: Lint del código (Ruff)
+        run: ruff check src tests scripts
 
-      - name: Validar el contrato OpenAPI (T4)
-        run: spectral lint api/openapi.yaml
+      - name: Análisis estático de seguridad (Bandit)
+        run: bandit -q -r src -x src/generated -ll
 
-      - name: Análisis estático del código (T8)
-        run: ruff check src tests
+      - name: Validar el contrato OpenAPI (Spectral)
+        run: |
+          npm install -g @stoplight/spectral-cli@6.17.0
+          spectral lint api/openapi.yaml --fail-severity=warn
 
-      - name: Pruebas unitarias, de integración y BDD (T7)
-        run: pytest -v
+      - name: Pruebas unitarias, de integración y BDD (pytest)
+        run: pytest -q
+
+      - name: Build de la documentación
+        run: python scripts/build_docs.py --out site
+
+      - name: Publicar la documentación construida
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentacion-html
+          path: site
+          retention-days: 7
